@@ -6,7 +6,7 @@ import {Routes,Route} from 'react-router-dom';
 
 import Dashboard from './dashboard';
 import ClientForm from './clientform';
-// import AddInventory from './AddInventory';
+import TotalClients from './totalclient';
 // import CreateInvoice from './CreateInvoice';
 // import Totalinvoice from './Totalinvoice';
 // import Totalcustomer from './Totalcustomer';
@@ -20,6 +20,7 @@ const AppRouter: React.FC<IProspectClientProps> = (props) => {
     <Routes>
       <Route path="/" element={<Dashboard {...props} />} />
         <Route path="clientform" element={<ClientForm {...props} />} />
+             <Route path="totalclient" element={<TotalClients {...props} />} />
      
     </Routes>
   );

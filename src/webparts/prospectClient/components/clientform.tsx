@@ -13,9 +13,8 @@ interface IClientFormProps {
 }
 
 const statusOptions: IDropdownOption[] = [
-  { key: 'In Progress', text: 'In Progress' },
-  { key: 'Funnel', text: 'Funnel' },
-  { key: 'Close/Win', text: 'Close/Win' },
+  { key: 'Active', text: 'Active' },
+  { key: 'Inactive', text: 'Inactive' },
 ];
 
 const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
@@ -23,31 +22,31 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   const sp = spfi().using(SPFx(context));
 
   const [formData, setFormData] = useState({
-    agreementDate: null,
-    salesPerson: '',
-    clientName: '',
-    clientLocation: '',
-    hiringContact: '',
-    hiringEmail: '',
-    hiringMobile: '',
-    billingContact: '',
-    billingEmail: '',
-    billingMobile: '',
-    commercials: '',
-    paymentPeriod: '',
-    replacementPeriod: '',
-    gstNumber: '',
-    website: '',
-    linkedin1: '',
-    linkedin2: '',
-    industry: '',
-    status: '',
-    street: '',
-    city: '',
-    state: '',
-    country: '',
-    postalCode: '',
-    locationName: ''
+    DateofAgreement: '',
+    SalesPersonName: '',
+    ClientName: '',
+    ClientLocation: '',
+    ClientLocation_x003a_Street: '',
+    ClientLocation_x003a_City: '',
+    ClientLocation_x003a_State: '',
+    ClientLocation_x003a_Country_x00: '',
+    ClientLocation_x003a_PostalCode: '',
+    ClientLocation_x003a_Name: '',
+    ContactPersonforHiring: '',
+    EmailAddress_x002d_Hiring: '',
+    Mobilenumber: '',
+    Billing_x002f_Accounting: '',
+    EmailAddress_x002d_Accounting_x0: '',
+    MobileNumber_x002d_Billing_x002f: '',
+    CommercialsDecided: '',
+    PaymentPeriod: '',
+    ReplacementPeriod: '',
+    GSTNumber: '',
+    ClientWebsite: '',
+    LinkedinProfile1: '',
+    Linkedinprofile2: '',
+    ClientIndustry: '',
+    status: ''
   });
 
   const handleChange = (field: string, value: any) => {
@@ -57,59 +56,61 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   const handleSubmit = async () => {
     try {
       await sp.web.lists.getByTitle("client list").items.add({
-        Title: formData.clientName,
-        SalesPersonName: formData.salesPerson,
-        AgreementDate: formData.agreementDate,
-        ClientLocation: formData.clientLocation,
-        HiringContact: formData.hiringContact,
-        HiringEmail: formData.hiringEmail,
-        HiringMobile: formData.hiringMobile,
-        BillingContact: formData.billingContact,
-        BillingEmail: formData.billingEmail,
-        BillingMobile: formData.billingMobile,
-        Commercials: formData.commercials,
-        PaymentPeriod: formData.paymentPeriod,
-        ReplacementPeriod: formData.replacementPeriod,
-        GSTNumber: formData.gstNumber,
-        Website: formData.website,
-        Linkedin1: formData.linkedin1,
-        Linkedin2: formData.linkedin2,
-        Industry: formData.industry,
-        Status: formData.status,
-        Street: formData.street,
-        City: formData.city,
-        State: formData.state,
-        Country: formData.country,
-        PostalCode: formData.postalCode,
-        LocationName: formData.locationName
+
+        SalesPersonName: formData.SalesPersonName,
+        DateofAgreement: formData.DateofAgreement,
+        ClientName : formData.ClientName,
+        ClientLocation: formData.ClientLocation,
+        ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
+        ClientLocation_x003a_City: formData.ClientLocation_x003a_City,
+        ClientLocation_x003a_State: formData.ClientLocation_x003a_State,
+        ClientLocation_x003a_Country_x00: formData.ClientLocation_x003a_Country_x00,
+        ClientLocation_x003a_PostalCode: formData.ClientLocation_x003a_PostalCode,
+        ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
+        ContactPersonforHiring: formData.ContactPersonforHiring,
+        EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
+        Mobilenumber: formData.Mobilenumber,
+        Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
+        EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
+        MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
+        CommercialsDecided: formData.CommercialsDecided,
+        PaymentPeriod: formData.PaymentPeriod,
+        ReplacementPeriod: formData.ReplacementPeriod,
+        GSTNumber: formData.GSTNumber,
+        ClientWebsite: formData.ClientWebsite,
+        LinkedinProfile1: formData.LinkedinProfile1,
+        Linkedinprofile2: formData.Linkedinprofile2,
+        ClientIndustry: formData.ClientIndustry,
+        status: formData.status,
+       
       });
       alert('Client form submitted successfully.');
       setFormData({
-        agreementDate: null,
-        salesPerson: '',
-        clientName: '',
-        clientLocation: '',
-        hiringContact: '',
-        hiringEmail: '',
-        hiringMobile: '',
-        billingContact: '',
-        billingEmail: '',
-        billingMobile: '',
-        commercials: '',
-        paymentPeriod: '',
-        replacementPeriod: '',
-        gstNumber: '',
-        website: '',
-        linkedin1: '',
-        linkedin2: '',
-        industry: '',
-        status: '',
-        street: '',
-        city: '',
-        state: '',
-        country: '',
-        postalCode: '',
-        locationName: ''
+        DateofAgreement: '',
+        SalesPersonName: '',
+        ClientName: '',
+        ClientLocation: '',
+        ClientLocation_x003a_Street: '',
+        ClientLocation_x003a_City: '',
+        ClientLocation_x003a_State: '',
+        ClientLocation_x003a_Country_x00: '',
+        ClientLocation_x003a_PostalCode: '',
+        ClientLocation_x003a_Name: '',
+        ContactPersonforHiring: '',
+        EmailAddress_x002d_Hiring: '',
+        Mobilenumber:'',
+        Billing_x002f_Accounting: '',
+        EmailAddress_x002d_Accounting_x0: '',
+        MobileNumber_x002d_Billing_x002f: '',
+        CommercialsDecided: '',
+        PaymentPeriod: '',
+        ReplacementPeriod: '',
+        GSTNumber: '',
+        ClientWebsite: '',
+        LinkedinProfile1: '',
+        Linkedinprofile2: '',
+        ClientIndustry: '',
+        status: ''
       });
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -187,43 +188,42 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
         </div>
         <nav className={styles.navBar}>
           <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-          <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
           <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement</button>
           <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
+          <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
         </nav>
       </header>
       
+<div className={styles.clientFormWrapper}>
+  <h2>Client Onboarding Form</h2>
+<div className={styles.formGrid}>
+  <TextField label="Sales Person Name" value={formData.SalesPersonName} onChange={(_, val) => handleChange('SalesPersonName', val)} />
+  <DatePicker label="Date of Agreement" onSelectDate={(date) => handleChange('DateofAgreement', date)} />
+  <TextField label="Client Name" value={formData.ClientName} onChange={(_, val) => handleChange('ClientName', val)} />
+  <TextField label="Client Location" value={formData.ClientLocation} onChange={(_, val) => handleChange('ClientLocation', val)} />
+  <TextField label="Client Location: Street" value={formData.ClientLocation_x003a_Street} onChange={(_, val) => handleChange('ClientLocation_x003a_Street', val)} />
+  <TextField label="Client Location: City" value={formData.ClientLocation_x003a_City} onChange={(_, val) => handleChange('ClientLocation_x003a_City', val)} />
+  <TextField label="Client Location: State" value={formData.ClientLocation_x003a_State} onChange={(_, val) => handleChange('ClientLocation_x003a_State', val)} />
+  <TextField label="Client Location: Country/Region" value={formData.ClientLocation_x003a_Country_x00} onChange={(_, val) => handleChange('ClientLocation_x003a_Country_x00', val)} />
+  <TextField label="Client Location: Postal Code" value={formData.ClientLocation_x003a_PostalCode} onChange={(_, val) => handleChange('ClientLocation_x003a_PostalCode', val)} />
+  <TextField label="Client Location: Name" value={formData.ClientLocation_x003a_Name} onChange={(_, val) => handleChange('ClientLocation_x003a_Name', val)} />
+  <TextField label="Contact Person for Hiring" value={formData.ContactPersonforHiring} onChange={(_, val) => handleChange('ContactPersonforHiring', val)} />
+  <TextField label="Email Address - Hiring" value={formData.EmailAddress_x002d_Hiring} onChange={(_, val) => handleChange('EmailAddress_x002d_Hiring', val)} />
+  <TextField label="Mobile number" value={formData.Mobilenumber} onChange={(_, val) => handleChange('Mobilenumber', val)} />
+  <TextField label="Billing/Accounting" value={formData.Billing_x002f_Accounting} onChange={(_, val) => handleChange('Billing_x002f_Accounting', val)} />
+  <TextField label="Email Address - Accounting/ Billing" value={formData.EmailAddress_x002d_Accounting_x0} onChange={(_, val) => handleChange('EmailAddress_x002d_Accounting_x0', val)} />
+  <TextField label="Mobile Number - Billing/Accounting" value={formData.MobileNumber_x002d_Billing_x002f} onChange={(_, val) => handleChange('MobileNumber_x002d_Billing_x002f', val)} />
+  <TextField label="Commercials Decided" value={formData.CommercialsDecided} onChange={(_, val) => handleChange('CommercialsDecided', val)} />
+  <TextField label="Payment Period" value={formData.PaymentPeriod} onChange={(_, val) => handleChange('PaymentPeriod', val)} />
+  <TextField label="Replacement Period" value={formData.ReplacementPeriod} onChange={(_, val) => handleChange('ReplacementPeriod', val)} />
+  <TextField label="GST Number" value={formData.GSTNumber} onChange={(_, val) => handleChange('GSTNumber', val)} />
+  <TextField label="Client Website" value={formData.ClientWebsite} onChange={(_, val) => handleChange('ClientWebsite', val)} />
+  <TextField label="Linkedin Profile 1" value={formData.LinkedinProfile1} onChange={(_, val) => handleChange('LinkedinProfile1', val)} />
+  <TextField label="Linkedin Profile 2" value={formData.Linkedinprofile2} onChange={(_, val) => handleChange('Linkedinprofile2', val)} />
+  <TextField label="Client Industry" value={formData.ClientIndustry} onChange={(_, val) => handleChange('ClientIndustry', val)} />
+  <Dropdown label="Status" options={statusOptions} selectedKey={formData.status} onChange={(_, option) => handleChange('status', option?.key)} />
+</div>
 
-    <h2>Client Onboarding Form</h2>
-
-  {/* 2-column layout form inside one container */}
-  <div className={styles.formGrid}>
-    <TextField label="Sales Person Name" value={formData.salesPerson} onChange={(_, val) => handleChange('salesPerson', val)} />
-    <DatePicker label="Date of Agreement" onSelectDate={(date) => handleChange('agreementDate', date)} />
-    <TextField label="Client Name" value={formData.clientName} onChange={(_, val) => handleChange('clientName', val)} />
-    <TextField label="Client Location" value={formData.clientLocation} onChange={(_, val) => handleChange('clientLocation', val)} />
-    <TextField label="Contact Person for Hiring" value={formData.hiringContact} onChange={(_, val) => handleChange('hiringContact', val)} />
-    <TextField label="Email Address - Hiring" value={formData.hiringEmail} onChange={(_, val) => handleChange('hiringEmail', val)} />
-    <TextField label="Mobile number" value={formData.hiringMobile} onChange={(_, val) => handleChange('hiringMobile', val)} />
-    <TextField label="Billing/Accounting" value={formData.billingContact} onChange={(_, val) => handleChange('billingContact', val)} />
-    <TextField label="Email Address - Accounting/ Billing" value={formData.billingEmail} onChange={(_, val) => handleChange('billingEmail', val)} />
-    <TextField label="Mobile Number - Billing/Accounting" value={formData.billingMobile} onChange={(_, val) => handleChange('billingMobile', val)} />
-    <TextField label="Commercials Decided" value={formData.commercials} onChange={(_, val) => handleChange('commercials', val)} />
-    <TextField label="Payment Period" value={formData.paymentPeriod} onChange={(_, val) => handleChange('paymentPeriod', val)} />
-    <TextField label="Replacement Period" value={formData.replacementPeriod} onChange={(_, val) => handleChange('replacementPeriod', val)} />
-    <TextField label="GST Number" value={formData.gstNumber} onChange={(_, val) => handleChange('gstNumber', val)} />
-    <TextField label="Client Website" value={formData.website} onChange={(_, val) => handleChange('website', val)} />
-    <TextField label="Linkedin Profile 1" value={formData.linkedin1} onChange={(_, val) => handleChange('linkedin1', val)} />
-    <TextField label="Linkedin Profile 2" value={formData.linkedin2} onChange={(_, val) => handleChange('linkedin2', val)} />
-    <TextField label="Client Industry" value={formData.industry} onChange={(_, val) => handleChange('industry', val)} />
-    <Dropdown label="Status" options={statusOptions} selectedKey={formData.status} onChange={(_, option) => handleChange('status', option?.key)} />
-    <TextField label="Client Location: Street" value={formData.street} onChange={(_, val) => handleChange('street', val)} />
-    <TextField label="Client Location: City" value={formData.city} onChange={(_, val) => handleChange('city', val)} />
-    <TextField label="Client Location: State" value={formData.state} onChange={(_, val) => handleChange('state', val)} />
-    <TextField label="Client Location: Country/Region" value={formData.country} onChange={(_, val) => handleChange('country', val)} />
-    <TextField label="Client Location: Postal Code" value={formData.postalCode} onChange={(_, val) => handleChange('postalCode', val)} />
-    <TextField label="Client Location: Name" value={formData.locationName} onChange={(_, val) => handleChange('locationName', val)} />
-  </div>
 
   {/* Submit Button */}
   <div className={styles.submitSection}>
@@ -231,7 +231,7 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   </div>
   </div>
   </div>
-
+</div>
   );
 };
 
