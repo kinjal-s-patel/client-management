@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "18.20.8",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.24.0"
+    },
+    "version": "1.20.0",
+    "libraryName": "prospect-client-management",
+    "libraryId": "9358716d-a154-4068-9b3e-d26e8fb044a8",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "prospect-client-management",
+    "solutionShortDescription": "prospect-client-management description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

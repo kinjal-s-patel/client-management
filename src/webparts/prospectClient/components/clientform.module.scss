@@ -1,0 +1,112 @@
+.dashboardWrapper {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fb;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* Header - Same as Dashboard */
+.dashboardHeader {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 40px;
+  background: linear-gradient(to right, #004e92, #000428);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.subtitle {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+.navBar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.navButton {
+  background-color: #ffffff;
+  color: #004e92;
+  border: 2px solid #004e92;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #004e92;
+    color: #ffffff;
+    cursor: pointer;
+  }
+}
+
+/* Form Section Containers */
+.formWrapper {
+  background-color: #f4f7fb;
+  min-height: 100vh;
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    color: #004e92;
+  }
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+  background-color: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.submitSection {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+
+  button {
+    background-color: #004e92;
+    color: white;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #003b75;
+    }
+  }
+}
