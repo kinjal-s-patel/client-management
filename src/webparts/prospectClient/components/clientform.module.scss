@@ -5,72 +5,65 @@
   padding: 0;
 }
 
-/* Header - Same as Dashboard */
+/* ===== Header Styles ===== */
 .dashboardHeader {
+background: linear-gradient(to right, #004e92, #000428);
+  color: #fff;
   display: flex;
-  flex-direction: column;
-  padding: 20px 40px;
-  background: linear-gradient(to right, #004e92, #000428);
-  color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px; /* Increased vertical & horizontal padding */
+  flex-wrap: wrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  min-height: 90px; /* Ensures header height stays broad */
 }
 
 .logoSection {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .logo {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
+  height: 50px;
+  width: auto;
 }
 
 .title {
-  margin: 0;
-  font-size: 28px;
+  font-size: 1.5rem;
   font-weight: bold;
+  margin: 0;
 }
 
 .subtitle {
-  margin: 4px 0 0 0;
-  font-size: 14px;
-  color: #e0e0e0;
+  font-size: 0.85rem;
+  color: #cce0ff; /* Light blue shade */
+  margin: 0;
 }
 
 .navBar {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
 }
 
 .navButton {
-  background-color: #ffffff;
-  color: #004e92;
-  border: 2px solid #004e92;
-  border-radius: 6px;
-  padding: 10px 20px;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  background-color: #fff; /* Primary blue */
+  border: none;
+  color: #003366;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.3s ease;
 
   &:hover {
-    background-color: #004e92;
-    color: #ffffff;
-    cursor: pointer;
+    background-color: #95b7da;
   }
 }
 
 /* Form Section Containers */
-.formWrapper {
-  background-color: #f4f7fb;
-  min-height: 100vh;
-  padding: 40px;
-  font-family: 'Segoe UI', sans-serif;
-    margin-top: 32px; // ✅ Add space below the header
-}
+
 
 .clientFormWrapper {
   background-color: #ffffff;
@@ -131,24 +124,34 @@ textarea:focus {
 }
 
 .submitSection {
-  display: flex;
-  justify-content: center;
+  grid-column: 1 / -1;
+  text-align: right;
   margin-top: 32px;
 
   button {
-    background-color: #004e92;
-    color: white;
-    padding: 12px 32px;
-    font-size: 16px;
-    font-weight: 600;
+    background-color: #28a745; /* Success green */
     border: none;
-    border-radius: 8px;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 0.95rem;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease;
+    transition: background 0.3s ease;
 
     &:hover {
-      background-color: #003b75;
+      background-color: #218838;
+    }
+
+    &:disabled {
+      background-color: #94d3a2;
+      cursor: not-allowed;
     }
   }
+}
+.footer {
+  background-color: #003366;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  font-size: 0.85rem;
 }

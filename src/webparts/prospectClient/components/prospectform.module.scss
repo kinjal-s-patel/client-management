@@ -1,0 +1,160 @@
+.dashboardWrapper {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f7fb;
+  min-height: 100vh;
+  padding: 0;
+}
+
+/* ===== Header Styles ===== */
+.dashboardHeader {
+  background: linear-gradient(to right, #004e92, #000428);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  flex-wrap: wrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  min-height: 90px;
+}
+
+.logoSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  height: 50px;
+  width: auto;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #cce0ff;
+  margin: 0;
+}
+
+.navBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.navButton {
+  background-color: #fff;
+  border: none;
+  color: #003366;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: #95b7da;
+  transform: translateY(-1px);
+}
+
+/* ===== Form Card ===== */
+.formWrapper {
+background-color: #ffffff;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  max-width: 1200px;
+}
+
+.pageTitle {
+    font-size: 24px;
+  font-weight: 600;
+  color: #004e92;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #004e92;
+  padding-bottom: 8px;
+}
+
+/* ===== Form Layout ===== */
+.formWrapper {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+
+.required {
+  color: red;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+   color: #000; /* Set entered text to black */
+
+  label {
+    font-weight: 600;
+    margin-bottom: 6px;
+     color: #000; /* Set label text to black */
+  }
+
+  input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: black; // text inside input is black
+    background-color: white;
+
+    &:invalid:focus {
+      border-color: red;
+      outline: none;
+    }
+  }
+}
+
+.required {
+  color: red;
+}
+
+.fullWidth {
+  grid-column: span 3;
+}
+
+.saveBtn {
+  background-color: #0078d4;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveBtn:hover {
+  background-color: #005a9e;
+}
+
+/* ===== Footer ===== */
+.footer {
+  background-color: #003366;
+  color: #fff;
+  text-align: center;
+  padding: 12px;
+  font-size: 0.85rem;
+}

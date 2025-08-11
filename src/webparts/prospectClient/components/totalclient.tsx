@@ -14,13 +14,14 @@ export interface ITotalClientsProps {
 interface IClient {
   Id: number;
   ClientName: string;
-  Email: string;
-  MobileNumber: string;
-  Industry: string;
-  Location: string;
-  ContactPerson: string;
-  AgreementDate: string;
-  Status: string;
+  EmailAddress_x002d_Hiring: string;
+  ContactPersonforHiring : string;
+  Mobilenumber: string;
+  ClientLocation_x003a_Name: string;
+  ClientIndustry: string;
+  DateofAgreement : Date;
+  GSTNumber: number;
+  status: string;
   [key: string]: any; // for additional dynamic fields
 }
 
@@ -42,7 +43,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
     };
 
     fetchClients();
-  }, [sp]);
+  }, [sp]);``
 
   const filteredClients = clients.filter(client =>
     client.ClientName?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -55,7 +56,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
         <div className={styles.logoSection}>
           <img src={logo} alt="Logo" className={styles.logo} />
           <div>
-            <h1 className={styles.title}>Engage360</h1>
+            <h1 className={styles.title}>Client Management</h1>
             <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
           </div>
         </div>
@@ -92,6 +93,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
               <th>Location</th>
               <th>Contact Person</th>
               <th>Agreement Date</th>
+              <th>GST Number</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -101,12 +103,13 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <td>{client.Id}</td>
                 <td>{client.ClientName}</td>
                 <td>{client.Email}</td>
-                <td>{client.MobileNumber}</td>
-                <td>{client.Industry}</td>
+                <td>{client.Mobilenumber}</td>
+                <td>{client.ClientIndustry}</td>
                 <td>{client.Location}</td>
                 <td>{client.ContactPerson}</td>
-                <td>{client.AgreementDate}</td>
-                <td>{client.Status}</td>
+                <td>{client.DateofAgreement}</td>
+                <td>{client.GSTNumber}</td>
+                <td>{client.status}</td>
               </tr>
             ))}
           </tbody>
@@ -115,7 +118,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        © 2025 Engage360. All rights reserved.
+        © 2025 client Management. All rights reserved.
       </footer>
     </div>
   );

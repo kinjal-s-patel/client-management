@@ -182,7 +182,7 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
         <div className={styles.logoSection}>
          <img src={logo} alt="Logo" className={styles.logo} />
           <div>
-            <h1 className={styles.title}>Engage360</h1>
+            <h1 className={styles.title}>Client Management</h1>
             <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
           </div>
         </div>
@@ -231,6 +231,11 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   </div>
   </div>
   </div>
+
+    {/* Footer */}
+      <footer className={styles.footer}>
+        © 2025 client Management. All rights reserved.
+      </footer>
 </div>
   );
 };
