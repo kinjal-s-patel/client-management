@@ -128,11 +128,11 @@ useEffect(() => {
 
         {/* Cards */}
         <section className={styles.cardContainer}>
-          <button className={styles.card} onClick={() => navigate('/prospects')}>
+          <button className={styles.card} onClick={() => navigate('/totalprospects')}>
             <h3>Total Prospects</h3>
             <p>{totalProspects}</p>
           </button>
-          <button className={styles.card} onClick={() => navigate('/clients')}>
+          <button className={styles.card} onClick={() => navigate('/totalclient')}>
             <h3>Converted Clients</h3>
             <p>{convertedClients}</p>
           </button>

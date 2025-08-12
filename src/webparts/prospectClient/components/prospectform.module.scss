@@ -132,6 +132,11 @@ background-color: #ffffff;
 .required {
   color: red;
 }
+.errorMsg {
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
 
 .fullWidth {
   grid-column: span 3;

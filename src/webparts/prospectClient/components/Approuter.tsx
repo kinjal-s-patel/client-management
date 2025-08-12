@@ -8,8 +8,7 @@ import Dashboard from './dashboard';
 import ClientForm from './clientform';
 import TotalClients from './totalclient';
 import ProspectFormPage from './prospectform';
-// import Totalinvoice from './Totalinvoice';
-// import Totalcustomer from './Totalcustomer';
+import TotalProspects from './totalprospects';
 // import Totalinventory from './Totalinventory';
 
 import { IProspectClientProps } from './IProspectClientProps';
@@ -22,9 +21,11 @@ const AppRouter: React.FC<IProspectClientProps> = (props) => {
         <Route path="clientform" element={<ClientForm {...props} />} />
              <Route path="totalclient" element={<TotalClients {...props} />} />
              <Route path="prospectform" element={<ProspectFormPage {...props} />} />
+              <Route path="totalprospects" element={<TotalProspects {...props} />} />
+              {/* <Route path="/prospectform/edit/:prospectId" element={<ProspectFormPage sp={sp} />} /> Edit */}
      
     </Routes>
   );
 };
 
-export default AppRouter;
+export default AppRouter; 

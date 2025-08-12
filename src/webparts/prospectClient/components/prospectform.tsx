@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { spfi, SPFx } from "@pnp/sp";
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
@@ -11,182 +11,294 @@ import logo from '../assets/LOGO.png';
 
 interface IProspectFormProps {
   context: any; // SPFx context
+  
 }
+
+interface ProspectInfo {
+   ProspectID: string;  // <-- added here
+  ContactPersonName: string;
+  Designation: string;
+  CompanyName: string;
+  Website: string;
+  Linkedin: string;
+  Industry: string;
+  Email: string;
+  PhoneNumber: string; // Keep as string for input fields
+  Location: string;
+  AdditionalContactPersonName: string;
+  additionalEmail: string;
+  additionalDesignation: string;
+  additionalMobilenumber: string;
+  SalespersonName: string;
+  DateofFirstContact: string;
+  FollowUpDate1: string;
+  FollowUpDate2: string;
+  FollowUpDate3: string;
+  ContactMethod: string;
+  MeetingDate: string;
+  NotesfromInteraction: string;
+  CurrentStatus: string;
+  ClientResponse: string;
+  NextSteps: string;
+}
+
 
 const ProspectForm: React.FC<IProspectFormProps> = ({ context }) => {
   const sp = spfi().using(SPFx(context));
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
+  const [prospectId, setProspectId] = useState("");
+  const [itemId, setItemId] = useState<number | null>(null);
 
-  // Section 1: Prospect Information
-  const [prospectInfo, setProspectInfo] = useState({
-    ContactPersonName: '',
-    Designation: '',
-    CompanyName: '',
-    Website: '',
-    Linkedin: '',
-    Industry: '',
-    Email: '',
-    PhoneNumber: '',
-    Location: '',
-    AdditionalContactPersonName: '',
-    additionalEmail: '',
-    additionalDesignation: '',
-    additionalMobilenumber: ''
-  });
+const [prospectInfo, setProspectInfo] = useState({
+    ProspectID: '',  // <-- added here
+  ContactPersonName: '',
+  Designation: '',
+  CompanyName: '',
+  Website: '',
+  Linkedin: '',
+  Industry: '',
+  Email: '',
+  PhoneNumber: '',
+  Location: '',
+  AdditionalContactPersonName: '',
+  additionalEmail: '',
+  additionalDesignation: '',
+  additionalMobilenumber: '',
+  SalespersonName: '',
+  DateofFirstContact: '',
+  FollowUpDate1: '',
+  FollowUpDate2: '',
+  FollowUpDate3: '',
+  ContactMethod: '',
+  MeetingDate: '',
+  NotesfromInteraction: '',
+  CurrentStatus: '',
+  ClientResponse: '',
+  NextSteps: ''
+});
 
-  // Section 2: Sales Interaction Details
-  const [salesInteraction, setSalesInteraction] = useState({
-    SalespersonName: context.pageContext.user.displayName,
-    DateofFirstContact: '',
-    FollowUpDate1: '',
-    FollowUpDate2: '',
-    FollowUpDate3: '',
-    ContactMethod: '',
-    MeetingDate: '',
-    NotesfromInteraction: ''
-  });
+  useEffect(() => {
+    generateProspectId();
+  }, []);
 
-  // Section 3: Prospect Status
-  const [prospectStatus, setProspectStatus] = useState({
-    CurrentStatus: '',
-    ClientResponse: '',
-    NextSteps: ''
-  });
-
-  const handleChange = (section: string, field: string, value: string) => {
-    if (section === 'prospectInfo') {
-      setProspectInfo({ ...prospectInfo, [field]: value });
-    } else if (section === 'salesInteraction') {
-      setSalesInteraction({ ...salesInteraction, [field]: value });
-    } else if (section === 'prospectStatus') {
-      setProspectStatus({ ...prospectStatus, [field]: value });
-    }
-  };
-
-const saveStep = async () => {
+async function generateProspectId() {
   try {
-    if (step === 1) {
-      await sp.web.lists.getByTitle("Prospect List").items.add({
-        ContactPersonName: prospectInfo.ContactPersonName || "",
-        Designation: prospectInfo.Designation || "",
-        CompanyName: prospectInfo.CompanyName || "",
-        Website: prospectInfo.Website || "",
-        Linkedin: prospectInfo.Linkedin || "",
-        Industry: prospectInfo.Industry || "",
-        Email: prospectInfo.Email || "",
-        PhoneNumber: prospectInfo.PhoneNumber ? Number(prospectInfo.PhoneNumber) : null,
-        Location: prospectInfo.Location || "",
-        AdditionalContactPersonName: prospectInfo.AdditionalContactPersonName || "",
-        additionalEmail: prospectInfo.additionalEmail || "",
-        additionalDesignation: prospectInfo.additionalDesignation || "",
-        additionalMobilenumber: prospectInfo.additionalMobilenumber ? Number(prospectInfo.additionalMobilenumber) : null
-      });
-      alert("✅ Prospect Info saved successfully!");
-      setStep(2);
-    } 
-  if (step === 2) {
-  if (!salesInteraction.SalespersonName || !salesInteraction.DateofFirstContact || !salesInteraction.FollowUpDate1) {
-    alert("Please fill in all required fields in Sales Interaction Details.");
-    return;
+    const items = await sp.web.lists.getByTitle("Prospect List").items
+      .orderBy("ID", false).top(1)();
+
+    // Extract last numeric part of ProspectID or default 0
+    const lastIdRaw = items.length > 0 && items[0]?.ProspectID
+      ? parseInt(items[0].ProspectID.split('-')[1])
+      : 0;
+
+    const lastId = isNaN(lastIdRaw) ? 0 : lastIdRaw;
+
+    // Format new ProspectID like PROS-0001
+    const newId = `PROS-${(lastId + 1).toString().padStart(4, "0")}`;
+
+    setProspectId(newId);
+
+    setProspectInfo(prev => ({
+      ...prev,
+      ProspectID: newId
+    }));
+  } catch (err) {
+    console.error("Error generating Prospect ID", err);
   }
-
-  await sp.web.lists.getByTitle("Sales Interaction Details").items.add({
-    SalespersonName: salesInteraction.SalespersonName,
-    DateofFirstContact: new Date(salesInteraction.DateofFirstContact),
-    FollowUpDate1: new Date(salesInteraction.FollowUpDate1),
-    FollowUpDate2: salesInteraction.FollowUpDate2 ? new Date(salesInteraction.FollowUpDate2) : null,
-    FollowUpDate3: salesInteraction.FollowUpDate3 ? new Date(salesInteraction.FollowUpDate3) : null,
-    ContactMethod: salesInteraction.ContactMethod || "",
-    MeetingDate: salesInteraction.MeetingDate ? new Date(salesInteraction.MeetingDate) : null,
-    NotesfromInteraction: salesInteraction.NotesfromInteraction || ""
-  });
-
-  alert("✅ Sales Interaction Details saved successfully!");
-  setStep(step + 1);
 }
 
-    else if (step === 3) {
-      await sp.web.lists.getByTitle("Prospect Status").items.add({
-        CurrentStatus: prospectStatus.CurrentStatus || "",
-        ClientResponse: prospectStatus.ClientResponse || "",
-        NextSteps: prospectStatus.NextSteps || ""
-      });
-      alert("✅ Prospect Status saved successfully!");
-      alert("🎉 All sections saved successfully!");
-    }
 
-  } catch (err) {
-    console.error("❌ Error saving data:", err);
-    alert(`Error saving data in Step ${step}. Please check console for details.`);
+const handleChange = <
+  K extends keyof ProspectInfo
+>(
+  section: "prospectInfo",
+  field: K,
+  value: ProspectInfo[K]
+): void => {
+  if (section === "prospectInfo") {
+    setProspectInfo((prev) => ({
+      ...prev,
+      [field]: value
+    }));
   }
 };
 
 
-     React.useEffect(() => {
-        const style = document.createElement("style");
-        style.innerHTML = `
-          #SuiteNavWrapper,
-          #spSiteHeader,
-          #spLeftNav,
-          .spAppBar,
-          .sp-appBar,
-          .sp-appBar-mobile,
-          div[data-automation-id="pageCommandBar"],
-          div[data-automation-id="pageHeader"],
-          div[data-automation-id="pageFooter"] {
-            display: none !important;
-            height: 0 !important;
-            overflow: hidden !important;
-          }
-    
-          html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            height: 100% !important;
-            width: 100% !important;
-            overflow: hidden !important;
-            background: #fff !important;
-          }
-    
-          #spPageCanvasContent, .CanvasComponent, .CanvasZone, .CanvasSection, .control-zone {
-            width: 100vw !important;
-            height: 100vh !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-            max-width: 100vw !important;
-          }
-    
-          .ms-FocusZone {
-            overflow: hidden !important;
-          }
-        `;
-        document.head.appendChild(style);
-      }, []);
-    
+  const saveStep = async () => {
+    try {
+      if (step === 1) {
+        const requiredFields = [
+          { key: 'ContactPersonName', label: 'Contact Person Name' },
+          { key: 'Designation', label: 'Designation' },
+          { key: 'CompanyName', label: 'Company Name' },
+          { key: 'Website', label: 'Website' },
+          { key: 'Linkedin', label: 'LinkedIn' },
+          { key: 'Industry', label: 'Industry' },
+          { key: 'Email', label: 'Email' },
+          { key: 'PhoneNumber', label: 'Phone Number' },
+          { key: 'Location', label: 'Location' }
+        ];
+
+        const missing = requiredFields
+          .filter(({ key }) => !prospectInfo[key as keyof typeof prospectInfo]?.trim())
+          .map(({ label }) => label);
+
+        if (missing.length > 0) {
+          alert(`Please fill all required fields:\n${missing.join(', ')}`);
+          return;
+        }
+        
+const addResult = await sp.web.lists.getByTitle("Prospect List").items.add({
+
+          ProspectID: prospectId,
+          ContactPersonName: prospectInfo.ContactPersonName,
+          Designation: prospectInfo.Designation,
+          CompanyName: prospectInfo.CompanyName,
+          Website: prospectInfo.Website,
+          Linkedin: prospectInfo.Linkedin,
+          Industry: prospectInfo.Industry,
+          Email: prospectInfo.Email,
+          PhoneNumber: Number(prospectInfo.PhoneNumber),
+          Location: prospectInfo.Location,
+          AdditionalContactPersonName: prospectInfo.AdditionalContactPersonName || "",
+          additionalEmail: prospectInfo.additionalEmail || "",
+          additionalDesignation: prospectInfo.additionalDesignation || "",
+          additionalMobilenumber: prospectInfo.additionalMobilenumber ? Number(prospectInfo.additionalMobilenumber) : null
+        });
+
+  const newId = addResult?.data?.Id || addResult?.Id;
+if (!newId) {
+  throw new Error("Could not retrieve Id from addResult");
+}
+setItemId(newId);
+
+console.log("Add Result:", addResult);
+
+        alert("✅ Prospect Info saved successfully!");
+        setStep(2);
+      }
+
+      else if (step === 2 && itemId) {
+        const requiredFields = [
+          { key: 'SalespersonName', label: 'Salesperson Name' },
+          { key: 'DateofFirstContact', label: 'Date of First Contact' },
+          { key: 'FollowUpDate1', label: 'Follow Up Date 1' }
+        ];
+
+        const missing = requiredFields
+          .filter(({ key }) => !prospectInfo[key as keyof typeof prospectInfo]?.trim())
+          .map(({ label }) => label);
+
+        if (missing.length > 0) {
+          alert(`Please fill all required fields:\n${missing.join(', ')}`);
+          return;
+        }
+
+        await sp.web.lists.getByTitle("Prospect List").items.getById(itemId).update({
+          SalespersonName: prospectInfo.SalespersonName,
+          DateofFirstContact: new Date(prospectInfo.DateofFirstContact),
+          FollowUpDate1: new Date(prospectInfo.FollowUpDate1),
+          FollowUpDate2: prospectInfo.FollowUpDate2 ? new Date(prospectInfo.FollowUpDate2) : null,
+          FollowUpDate3: prospectInfo.FollowUpDate3 ? new Date(prospectInfo.FollowUpDate3) : null,
+          ContactMethod: prospectInfo.ContactMethod || "",
+          MeetingDate: prospectInfo.MeetingDate ? new Date(prospectInfo.MeetingDate) : null,
+          NotesfromInteraction: prospectInfo.NotesfromInteraction || ""
+        });
+
+        alert("✅ Sales Interaction Details saved successfully!");
+        setStep(3);
+      }
+
+      else if (step === 3 && itemId) {
+        const requiredFields = [
+          { key: 'CurrentStatus', label: 'Current Status' },
+          { key: 'ClientResponse', label: 'Client Response' }
+        ];
+
+        const missing = requiredFields
+          .filter(({ key }) => !prospectInfo[key as keyof typeof prospectInfo]?.trim())
+          .map(({ label }) => label);
+
+        if (missing.length > 0) {
+          alert(`Please fill all required fields:\n${missing.join(', ')}`);
+          return;
+        }
+
+        await sp.web.lists.getByTitle("Prospect List").items.getById(itemId).update({
+          CurrentStatus: prospectInfo.CurrentStatus,
+          ClientResponse: prospectInfo.ClientResponse,
+          NextSteps: prospectInfo.NextSteps
+        });
+
+        alert("✅ Prospect Status saved successfully!");
+        alert("🎉 All sections saved successfully!");
+      }
+    } catch (err) {
+      console.error("❌ Error saving data:", err);
+      alert(`Error saving data in Step ${step}. Please check console for details.`);
+    }
+  };
+
+    useEffect(() => {
+      const style = document.createElement("style");
+      style.innerHTML = `
+        #SuiteNavWrapper,
+        #spSiteHeader,
+        #spLeftNav,
+        .spAppBar,
+        .sp-appBar,
+        .sp-appBar-mobile,
+        div[data-automation-id="pageCommandBar"],
+        div[data-automation-id="pageHeader"],
+        div[data-automation-id="pageFooter"] {
+          display: none !important;
+          height: 0 !important;
+          overflow: hidden !important;
+        }
+        html, body {
+          margin: 0 !important;
+          padding: 0 !important;
+          height: 100% !important;
+          width: 100% !important;
+          overflow: hidden !important;
+          background: #fff !important;
+        }
+        #spPageCanvasContent, .CanvasComponent, .CanvasZone, .CanvasSection, .control-zone {
+          width: 100vw !important;
+          height: 100vh !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+          max-width: 100vw !important;
+        }
+        .ms-FocusZone {
+          overflow: hidden !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }, []);
+  
 
   return (
      <div
-  style={{
-    width: '100vw',
-    height: '100vh',
-    margin: 0,
-    padding: 0,
-    overflow: 'auto',
-    backgroundColor: '#fff',
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    zIndex: 9999
-  }}
-  >
-     <div className={styles.dashboardWrapper}>
-      {/* Header Section */}
+      style={{
+        width: '100vw',
+        height: '100vh',
+        margin: 0,
+        padding: 0,
+        overflow: 'auto',
+        backgroundColor: '#fff',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 9999
+      }}>
+    <div className={styles.dashboardWrapper}>
       <header className={styles.dashboardHeader}>
         <div className={styles.logoSection}>
-         <img src={logo} alt="Logo" className={styles.logo} />
+          <img src={logo} alt="Logo" className={styles.logo} />
           <div>
             <h1 className={styles.title}>Client Management</h1>
             <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
@@ -200,149 +312,176 @@ const saveStep = async () => {
         </nav>
       </header>
 
-<div className={styles.formWrapper}>
-  <h2 className={styles.pageTitle}>Prospect Form</h2>
+      <div className={styles.formWrapper}>
+        <h2 className={styles.pageTitle}>Prospect Form</h2>
 
-  <Accordion multiple={false} collapsible>
-    {/* Section 1 */}
-    <AccordionItem value="1">
-      <AccordionHeader>1. Prospect Information</AccordionHeader>
-      <AccordionPanel>
+<Accordion multiple={false} collapsible>
+  <AccordionItem value="1">
+    <AccordionHeader>1. Prospect Information</AccordionHeader>
+    <AccordionPanel>
+      {/* Row 1 */}
+      <div className={styles.formRow}>
+        <div className={styles.formGroup}>
+          <label>Prospect ID</label>
+          <input
+            type="text"
+            value={prospectInfo.ProspectID}
+            readOnly
+            style={{ backgroundColor: '#fff', cursor: 'not-allowed' }}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Contact Person Name <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.ContactPersonName}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'ContactPersonName', e.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Designation <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.Designation}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'Designation', e.target.value)}
+          />
+        </div>
+      </div>
 
-        {/* Row 1 */}
+      {/* Row 2 */}
+      <div className={styles.formRow}>
+        <div className={styles.formGroup}>
+          <label>Company Name <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.CompanyName}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'CompanyName', e.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Website <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.Website}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'Website', e.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>LinkedIn <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.Linkedin}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'Linkedin', e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Row 3 */}
+      <div className={styles.formRow}>
+        <div className={styles.formGroup}>
+          <label>Industry <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.Industry}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'Industry', e.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Email <span className={styles.required}>*</span></label>
+          <input
+            type="email"
+            value={prospectInfo.Email}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'Email', e.target.value)}
+          />
+        </div>
+        <div className={styles.formGroup}>
+          <label>Phone Number <span className={styles.required}>*</span></label>
+          <input
+            type="text"
+            value={prospectInfo.PhoneNumber}
+            required
+            onChange={(e) => handleChange('prospectInfo', 'PhoneNumber', e.target.value)}
+          />
+        </div>
+        </div>
+
+{/* Row 4 */}
 <div className={styles.formRow}>
-    <div className={styles.formGroup}>
-      <label>Contact Person Name <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.ContactPersonName}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'ContactPersonName', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>Designation <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.Designation}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Designation', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>Company Name <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.CompanyName}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'CompanyName', e.target.value)}
-      />
-    </div>
+  <div className={styles.formGroup}>
+    <label>Location <span className={styles.required}>*</span></label>
+    <input
+      type="text"
+      value={prospectInfo.Location}
+      required
+      onChange={(e) => handleChange('prospectInfo', 'Location', e.target.value)}
+    />
   </div>
 
-  {/* Row 2 */}
-  <div className={styles.formRow}>
-    <div className={styles.formGroup}>
-      <label>Website <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.Website}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Website', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>LinkedIn <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.Linkedin}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Linkedin', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>Industry <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.Industry}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Industry', e.target.value)}
-      />
-    </div>
+  <div className={styles.formGroup}>
+    <label>Additional Contact Person Name</label>
+    <input
+      type="text"
+      value={prospectInfo.AdditionalContactPersonName}
+      onChange={(e) => handleChange('prospectInfo', 'AdditionalContactPersonName', e.target.value)}
+    />
   </div>
 
-  {/* Row 3 */}
-  <div className={styles.formRow}>
-    <div className={styles.formGroup}>
-      <label>Email <span className={styles.required}>*</span></label>
-      <input
-        type="email"
-        value={prospectInfo.Email}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Email', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>Phone Number <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.PhoneNumber}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'PhoneNumber', e.target.value)}
-      />
-    </div>
-    <div className={styles.formGroup}>
-      <label>Location <span className={styles.required}>*</span></label>
-      <input
-        type="text"
-        value={prospectInfo.Location}
-        required
-        onChange={(e) => handleChange('prospectInfo', 'Location', e.target.value)}
-      />
-    </div>
+  <div className={styles.formGroup}>
+    <label>Additional Email</label>
+    <input
+      type="email"
+      value={prospectInfo.additionalEmail}
+      onChange={(e) => handleChange('prospectInfo', 'additionalEmail', e.target.value)}
+    />
+  </div>
+</div>
+
+{/* Row 5 */}
+<div className={styles.formRow}>
+  <div className={styles.formGroup}>
+    <label>Additional Designation</label>
+    <input
+      type="text"
+      value={prospectInfo.additionalDesignation}
+      onChange={(e) => handleChange('prospectInfo', 'additionalDesignation', e.target.value)}
+    />
   </div>
 
-        {/* Row 4 */}
-        <div className={styles.formRow}>
-          <div className={styles.formGroup}>
-            <label>Additional Contact Person Name</label>
-            <input type="text" value={prospectInfo.AdditionalContactPersonName} onChange={(e) => handleChange('prospectInfo', 'AdditionalContactPersonName', e.target.value)} />
-          </div>
-          <div className={styles.formGroup}>
-            <label>Additional Email</label>
-            <input type="email" value={prospectInfo.additionalEmail} onChange={(e) => handleChange('prospectInfo', 'AdditionalEmail', e.target.value)} />
-          </div>
-          <div className={styles.formGroup}>
-            <label>Additional Designation</label>
-            <input type="text" value={prospectInfo.additionalDesignation} onChange={(e) => handleChange('prospectInfo', 'AdditionalDesignation', e.target.value)} />
-          </div>
-        </div>
+  <div className={styles.formGroup}>
+    <label>Additional Mobile</label>
+    <input
+      type="text"
+      value={prospectInfo.additionalMobilenumber}
+      onChange={(e) => handleChange('prospectInfo', 'additionalMobilenumber', e.target.value)}
+    />
+  </div>
+</div>
 
-        {/* Row 5 */}
-        <div className={styles.formRow}>
-          <div className={styles.formGroup}>
-            <label>Additional Mobile</label>
-            <input type="text" value={prospectInfo.additionalMobilenumber} onChange={(e) => handleChange('prospectInfo', 'AdditionalMobile', e.target.value)} />
-          </div>
-        </div>
+      <button onClick={saveStep} className={styles.saveBtn}>Save & Next</button>
+    </AccordionPanel>
+  </AccordionItem>
 
-        <button onClick={saveStep} className={styles.saveBtn}>Save & Next</button>
-      </AccordionPanel>
-    </AccordionItem>
 
-    {/* Section 2 */}
-    <AccordionItem value="2">
-      <AccordionHeader>2. Sales Interaction Details</AccordionHeader>
-      <AccordionPanel>
 
+          <AccordionItem value="2">
+            <AccordionHeader>2. Sales Interaction Details</AccordionHeader>
+            <AccordionPanel>
+           
         {/* Row 1 */}
       <div className={styles.formRow}>
   <div className={styles.formGroup}>
     <label>Salesperson Name <span style={{ color: 'red' }}>*</span></label>
     <input
       type="text"
-      value={salesInteraction.SalespersonName}
-      onChange={(e) => handleChange('salesInteraction', 'SalespersonName', e.target.value)}
+      value={prospectInfo.SalespersonName}
+      onChange={(e) => handleChange('prospectInfo', 'SalespersonName', e.target.value)}
       required
     />
   </div>
@@ -351,8 +490,8 @@ const saveStep = async () => {
     <label>Date of First Contact <span style={{ color: 'red' }}>*</span></label>
     <input
       type="date"
-      value={salesInteraction.DateofFirstContact}
-      onChange={(e) => handleChange('salesInteraction', 'DateofFirstContact', e.target.value)}
+      value={prospectInfo.DateofFirstContact}
+      onChange={(e) => handleChange('prospectInfo', 'DateofFirstContact', e.target.value)}
       required
     />
   </div>
@@ -361,8 +500,8 @@ const saveStep = async () => {
     <label>Follow Up Date 1 <span style={{ color: 'red' }}>*</span></label>
     <input
       type="date"
-      value={salesInteraction.FollowUpDate1}
-      onChange={(e) => handleChange('salesInteraction', 'FollowUpDate1', e.target.value)}
+      value={prospectInfo.FollowUpDate1}
+      onChange={(e) => handleChange('prospectInfo', 'FollowUpDate1', e.target.value)}
       required
     />
   </div>
@@ -373,15 +512,15 @@ const saveStep = async () => {
         <div className={styles.formRow}>
           <div className={styles.formGroup}>
             <label>Follow Up Date 2</label>
-            <input type="date" value={salesInteraction.FollowUpDate2} onChange={(e) => handleChange('salesInteraction', 'FollowUpDate2', e.target.value)} />
+            <input type="date" value={prospectInfo.FollowUpDate2} onChange={(e) => handleChange('prospectInfo', 'FollowUpDate2', e.target.value)} />
           </div>
           <div className={styles.formGroup}>
             <label>Follow Up Date 3</label>
-            <input type="date" value={salesInteraction.FollowUpDate3} onChange={(e) => handleChange('salesInteraction', 'FollowUpDate3', e.target.value)} />
+            <input type="date" value={prospectInfo.FollowUpDate3} onChange={(e) => handleChange('prospectInfo', 'FollowUpDate3', e.target.value)} />
           </div>
           <div className={styles.formGroup}>
             <label>Contact Method</label>
-            <select value={salesInteraction.ContactMethod} onChange={(e) => handleChange('salesInteraction', 'ContactMethod', e.target.value)}>
+            <select value={prospectInfo.ContactMethod} onChange={(e) => handleChange('prospectInfo', 'ContactMethod', e.target.value)}>
               <option value="">Select Method</option>
               <option>Email</option>
               <option>Call</option>
@@ -394,27 +533,24 @@ const saveStep = async () => {
         <div className={styles.formRow}>
           <div className={styles.formGroup}>
             <label>Meeting Date</label>
-            <input type="date" value={salesInteraction.MeetingDate} onChange={(e) => handleChange('salesInteraction', 'MeetingDate', e.target.value)} />
+            <input type="date" value={prospectInfo.MeetingDate} onChange={(e) => handleChange('prospectInfo', 'MeetingDate', e.target.value)} />
           </div>
           <div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label>Notes</label>
-            <textarea value={salesInteraction.NotesfromInteraction} onChange={(e) => handleChange('salesInteraction', 'NotesfromInteraction', e.target.value)} />
+            <textarea value={prospectInfo.NotesfromInteraction} onChange={(e) => handleChange('prospectInfo', 'NotesfromInteraction', e.target.value)} />
           </div>
         </div>
+              <button onClick={saveStep} className={styles.saveBtn}>Save & Next</button>
+            </AccordionPanel>
+          </AccordionItem>
 
-        <button onClick={saveStep} className={styles.saveBtn}>Save & Next</button>
-      </AccordionPanel>
-    </AccordionItem>
-
-    {/* Section 3 */}
-    <AccordionItem value="3">
-      <AccordionHeader>3. Prospect Status</AccordionHeader>
-      <AccordionPanel>
-
-        <div className={styles.formRow}>
+          <AccordionItem value="3">
+            <AccordionHeader>3. Prospect Status</AccordionHeader>
+            <AccordionPanel>
+                 <div className={styles.formRow}>
           <div className={styles.formGroup}>
             <label>Current Status</label>
-            <select value={prospectStatus.CurrentStatus} onChange={(e) => handleChange('prospectStatus', 'CurrentStatus', e.target.value)}>
+            <select value={prospectInfo.CurrentStatus} onChange={(e) => handleChange('prospectInfo', 'CurrentStatus', e.target.value)}>
               <option value="">Select Status</option>
               <option>Contacted</option>
               <option>Meeting Scheduled</option>
@@ -425,7 +561,7 @@ const saveStep = async () => {
           </div>
           <div className={styles.formGroup}>
             <label>Client Response</label>
-            <select value={prospectStatus.ClientResponse} onChange={(e) => handleChange('prospectStatus', 'ClientResponse', e.target.value)}>
+            <select value={prospectInfo.ClientResponse} onChange={(e) => handleChange('prospectInfo', 'ClientResponse', e.target.value)}>
               <option value="">Select Response</option>
               <option>Yes – Proceed to Agreement</option>
               <option>No – Reconnect Later</option>
@@ -434,20 +570,19 @@ const saveStep = async () => {
           </div>
           < div className={`${styles.formGroup} ${styles.fullWidth}`}>
             <label>Next Steps</label>
-            <textarea value={prospectStatus.NextSteps} onChange={(e) => handleChange('prospectStatus', 'NextSteps', e.target.value)} />
+            <textarea value={prospectInfo.NextSteps} onChange={(e) => handleChange('prospectInfo', 'NextSteps', e.target.value)} />
           </div>
         </div>
 
-        <button onClick={saveStep} className={styles.saveBtn}>Save</button>
-      </AccordionPanel>
-    </AccordionItem>
-  </Accordion>
-</div>
-</div>
+              <button onClick={saveStep} className={styles.saveBtn}>Save</button>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </div>
 
-     {/* Footer */}
       <footer className={styles.footer}>
-        © 2025 client Management. All rights reserved.
+        © 2025 Client Management. All rights reserved.
       </footer>
     </div>
 
