@@ -1,31 +1,36 @@
-// AppRouter.tsx
 import * as React from 'react';
-
-import {Routes,Route} from 'react-router-dom';
-
+import { Routes, Route } from 'react-router-dom';
 
 import Dashboard from './dashboard';
 import ClientForm from './clientform';
 import TotalClients from './totalclient';
 import ProspectFormPage from './prospectform';
 import TotalProspects from './totalprospects';
-// import Totalinventory from './Totalinventory';
 
 import { IProspectClientProps } from './IProspectClientProps';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
-const AppRouter: React.FC<IProspectClientProps> = (props) => {
+// Define the props interface expected by AppRouter.
+// It should include context since you want to pass it to child components.
+interface IAppRouterProps extends IProspectClientProps {
+  context: WebPartContext;
+}
+
+const AppRouter: React.FC<IAppRouterProps> = (props) => {
+  const { context, ...restProps } = props;
 
   return (
     <Routes>
-      <Route path="/" element={<Dashboard {...props} />} />
-        <Route path="clientform" element={<ClientForm {...props} />} />
-             <Route path="totalclient" element={<TotalClients {...props} />} />
-             <Route path="prospectform" element={<ProspectFormPage {...props} />} />
-              <Route path="totalprospects" element={<TotalProspects {...props} />} />
-              {/* <Route path="/prospectform/edit/:prospectId" element={<ProspectFormPage sp={sp} />} /> Edit */}
-     
+      <Route path="/" element={<Dashboard {...restProps} context={context} />} />
+      <Route path="clientform" element={<ClientForm {...restProps} context={context} />} />
+     <Route path="/clientform/:id?" element={<ClientForm context={context} />} />
+      <Route path="totalclient" element={<TotalClients {...restProps} context={context} />} />
+      <Route path="totalprospects" element={<TotalProspects {...restProps} context={context} />} />
+      <Route path="prospectform" element={<ProspectFormPage {...props} />} />
+      <Route path="/prospectform/edit/:prospectId" element={<ProspectFormPage context={context} />} />
+
     </Routes>
   );
 };
 
-export default AppRouter; 
+export default AppRouter;

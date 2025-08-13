@@ -6,9 +6,11 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import styles from './totalprospects.module.scss';
 import logo from '../assets/LOGO.png';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 export interface ITotalProspectsProps {
   sp: any; // spfi object from parent
+  context: WebPartContext;
 }
 
 interface IProspect {
@@ -43,6 +45,36 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
   const navigate = useNavigate();
   const [prospects, setProspects] = useState<IProspect[]>([]); // <-- Fix: add setter
   const [searchTerm, setSearchTerm] = useState('');
+
+  // 1️⃣ Delete handler
+const handleDelete = async (prospectID: string) => {
+  const confirmDelete = window.confirm("Are you sure you want to delete this prospect?");
+  if (!confirmDelete) return;
+
+  try {
+    // Get the SharePoint item by ProspectID (not the same as ID column)
+    const items = await sp.web.lists
+      .getByTitle("Prospect List")
+      .items.filter(`ProspectID eq '${prospectID}'`)(); // Get item(s) matching ProspectID
+
+    if (items.length > 0) {
+      const itemId = items[0].Id; // SharePoint item ID
+
+      await sp.web.lists.getByTitle("Prospect List").items.getById(itemId).delete();
+
+      // Remove from state
+      setProspects(prev => prev.filter(p => p.ProspectID !== prospectID));
+
+      alert("Prospect deleted successfully.");
+    } else {
+      alert("Prospect not found.");
+    }
+  } catch (error) {
+    console.error("Error deleting prospect:", error);
+    alert("Failed to delete prospect.");
+  }
+};
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,7 +166,11 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+             <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement </button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
+             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
+
           </nav>
         </header>
 
@@ -144,7 +180,7 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Search by name or company..."
+            placeholder="Search by company"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
@@ -189,6 +225,7 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
                   <td>{p.NextSteps}</td>
                   <td>
                     <button className={styles.editButton} onClick={() => navigate(`/prospectform/edit/${p.ProspectID}`)}>Edit</button>
+                    <button className={styles.deleteButton} style={{ marginLeft: "8px", backgroundColor: "red", color: "white" }} onClick={() => handleDelete(p.ProspectID)}> Delete  </button>
                   </td>
                 </tr>
               ))}

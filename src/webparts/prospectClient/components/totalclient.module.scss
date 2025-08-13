@@ -115,6 +115,30 @@ background: linear-gradient(to right, #004e92, #000428);
   cursor: not-allowed;
   opacity: 0.5;
 }
+.editButton {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.1);
+}
+
+.editButton:hover {
+  background-color: #005a9e;
+}
+
+.editButton:active {
+  background-color: #004578;
+}
+
+.editButton:focus {
+  outline: 2px solid #005a9e;
+    outline-offset: 2px;
+}
 
 .footer {
   background-color: #003366;

@@ -6,13 +6,15 @@ import "@pnp/sp/lists";
 import "@pnp/sp/items";
 import styles from './totalclient.module.scss';
 import logo from '../assets/LOGO.png';
+import { WebPartContext } from '@microsoft/sp-webpart-base';
 
 export interface ITotalClientsProps {
   sp: any; // spfi object passed from parent
+  context: WebPartContext;
 }
 
 interface IClient {
-  Id: number;
+  ClientID: string;
   ClientName: string;
   EmailAddress_x002d_Hiring: string;
   ContactPersonforHiring: string;
@@ -29,6 +31,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
   const navigate = useNavigate();
   const [clients, setClients] = useState<IClient[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState(''); // '' means all
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,10 +40,24 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const items: IClient[] = await sp.web.lists
-          .getByTitle("client list")
-          .items.select("*")
-          .orderBy("Id", false)();
+        const items = await sp.web.lists
+  .getByTitle("client list")
+  .items
+  .select(
+    "Id",
+    "ClientID",
+    "ClientName",
+    "ContactPersonforHiring",
+    "EmailAddress_x002d_Hiring",
+    "DateofAgreement",
+    "GSTNumber",
+    "status",
+    "Mobilenumber",
+    "ClientLocation_x003a_Name",
+    "ClientIndustry"
+  )
+  .orderBy("Id", false)();
+
 
         setClients(items);
       } catch (error) {
@@ -51,9 +68,10 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
     fetchClients();
   }, [sp]);
 
-  // Filter clients by search term
+  // Filter clients by search term and status
   const filteredClients = clients.filter(client =>
-    client.ClientName?.toLowerCase().includes(searchTerm.toLowerCase())
+    client.ClientName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (statusFilter === '' || client.status?.toLowerCase() === statusFilter.toLowerCase())
   );
 
   // Pagination calculations
@@ -63,11 +81,12 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
     currentPage * itemsPerPage
   );
 
-  // Reset to first page if searchTerm changes (optional)
+  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, statusFilter]);
 
+  // Hide SharePoint UI elements
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -139,12 +158,13 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
             <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
             <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement</button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
+            <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>
         </header>
 
-        {/* Page Title and Search */}
-        <div className={styles.pageHeader}>
-          <h2>Total Clients</h2>
+        {/* Page Title, Search & Status Filter */}
+        <div className={styles.pageHeader} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <h2 style={{ flex: '1' }}>Total Clients</h2>
           <input
             type="text"
             className={styles.searchInput}
@@ -152,14 +172,23 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />
+          <select
+            className={styles.searchInput}
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+          >
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
         </div>
 
-        {/* Client Table with horizontal scroll */}
+        {/* Client Table */}
         <div className={styles.tableContainer} style={{ overflowX: 'auto' }}>
           <table className={styles.clientTable}>
             <thead>
               <tr>
-                {/* <th>ID</th> */}
+                 <th>Client ID</th>
                 <th>Client Name</th>
                 <th>Contact Person</th>
                 <th>Email</th>
@@ -169,12 +198,14 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <th>Mobile</th>
                 <th>Location</th>
                 <th>Industry</th>
+                <th>Action</th> {/* New column */}
+
               </tr>
             </thead>
             <tbody>
               {paginatedClients.map(client => (
                 <tr key={client.Id}>
-                  {/* <td>{client.Id}</td> */}
+                  <td>{client.ClientID}</td>
                   <td>{client.ClientName}</td>
                   <td>{client.ContactPersonforHiring}</td>
                   <td>{client.EmailAddress_x002d_Hiring}</td>
@@ -184,13 +215,14 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                   <td>{client.Mobilenumber}</td>
                   <td>{client.ClientLocation_x003a_Name}</td>
                   <td>{client.ClientIndustry}</td>
+                  <td><button className={styles.editButton} onClick={() => navigate(`/clientform/${client.ClientID}`)}>Edit</button></td>                  
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination Controls */}
+        {/* Pagination */}
         <div className={styles.pagination} style={{ marginTop: '1rem', textAlign: 'center' }}>
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
