@@ -7,7 +7,6 @@ import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { useNavigate, useParams } from 'react-router-dom';
 import logo from '../assets/LOGO.png';
 
-
 interface IClientFormProps {
   context: WebPartContext;
 }
@@ -20,8 +19,10 @@ const statusOptions: IDropdownOption[] = [
 const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   const navigate = useNavigate();
   const sp = spfi().using(SPFx(context));
-  const { id } = useParams<{ id?: string }>(); // id = ClientID from URL
-  const [clientID, setClientID] = useState<string>("");
+const { id } = useParams(); // This is actually the ClientID (CUST-001)
+  const [CLIENTId0, setClientID] = useState<string>("");
+    const [, setNumericId] = useState<number | null>(null); // hidden numeric ID
+
   
   const [formData, setFormData] = useState<any>({
     DateofAgreement: '',
@@ -50,214 +51,151 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
     ClientIndustry: '',
     status: ''
   });
-interface IClient {
-  ClientLocation: string;
-  ClientLocation_x003a_Street: string;
-  ClientLocation_x003a_City: string;
-  ClientLocation_x003a_State: string;
-  ClientLocation_x003a_Country_x00: string;
-  ClientLocation_x003a_PostalCode: string;
-  Billing_x002f_Accounting: string;
-  EmailAddress_x002d_Accounting_x0: string;
-  MobileNumber_x002d_Billing_x002f: string;
-  CommercialsDecided: string;
-  PaymentPeriod: string;
-  ReplacementPeriod: string;
-  GSTNumber: string;
-  ClientWebsite: string;
-  LinkedinProfile1: string;
-  Linkedinprofile2: string;
-  ClientIndustry: string;
-  DateofAgreement: string;
-  SalesPersonName: string;
-  status: any;
-  ContactPersonforHiring: any;
-  ClientName: string;
-  Mobilenumber: string;
-  ClientLocation_x003a_Name: string;
-  EmailAddress_x002d_Hiring: string;
-  ID: number;
-  ClientID: string;
-  Title?: string; // Add other fields as needed
-}
+  
   const handleChange = (field: string, value: any) => {
     setFormData({ ...formData, [field]: value });
   };
 
 useEffect(() => {
-  const fetchClient = async () => {
-    try {
-      const list = sp.web.lists.getByTitle("client list");
+  const fetchClientOrNextId = async () => {
+    const list = sp.web.lists.getByTitle("client list");
 
-      if (id) {
-        // EDIT MODE: fetch client by ClientID safely
-        const allItems: IClient[] = await list.items.select(
-            "ID",
-            "ClientID",
-            "SalesPersonName",
-            "DateofAgreement",
-            "ClientName",
-            "ClientLocation",
-            "ClientLocation_x003a_Street",
-            "ClientLocation_x003a_City",
-            "ClientLocation_x003a_State",
-            "ClientLocation_x003a_Country_x00",
-            "ClientLocation_x003a_PostalCode",
-            "ClientLocation_x003a_Name",
-            "ContactPersonforHiring",
-            "EmailAddress_x002d_Hiring",
-            "Mobilenumber",
-            "Billing_x002f_Accounting",
-            "EmailAddress_x002d_Accounting_x0",
-            "MobileNumber_x002d_Billing_x002f",
-            "CommercialsDecided",
-            "PaymentPeriod",
-            "ReplacementPeriod",
-            "GSTNumber",
-            "ClientWebsite",
-            "LinkedinProfile1",
-            "Linkedinprofile2",
-            "ClientIndustry",
-            "status"
-          )();
+    if (id) {
+      // EDIT MODE
+      const items = await list.items
+        .filter(`CLIENTId0 eq ${id}`)
+        .top(1)();
+      if (!items.length) return;
 
-        const client = allItems.find(
-          item => item.ClientID?.trim().toUpperCase() === id.trim().toUpperCase()
-        );
+      // Merge with previous formData instead of replacing it
+ const client = items[0];
+setFormData((prev: any) => ({
+  ...prev,
+  ...client,
+  DateofAgreement: client.DateofAgreement ? new Date(client.DateofAgreement) : undefined
+}));
 
-if (client) {
-  setFormData({
-  DateofAgreement: client.DateofAgreement || '',
-            SalesPersonName: client.SalesPersonName || '',
-            ClientName: client.ClientName || '',
-            ClientLocation: client.ClientLocation || '',
-            ClientLocation_x003a_Street: client.ClientLocation_x003a_Street || '',
-            ClientLocation_x003a_City: client.ClientLocation_x003a_City || '',
-            ClientLocation_x003a_State: client.ClientLocation_x003a_State || '',
-            ClientLocation_x003a_Country_x00: client.ClientLocation_x003a_Country_x00 || '',
-            ClientLocation_x003a_PostalCode: client.ClientLocation_x003a_PostalCode || '',
-            ClientLocation_x003a_Name: client.ClientLocation_x003a_Name || '',
-            ContactPersonforHiring: client.ContactPersonforHiring || '',
-            EmailAddress_x002d_Hiring: client.EmailAddress_x002d_Hiring || '',
-            Mobilenumber: client.Mobilenumber || '',
-            Billing_x002f_Accounting: client.Billing_x002f_Accounting || '',
-            EmailAddress_x002d_Accounting_x0: client.EmailAddress_x002d_Accounting_x0 || '',
-            MobileNumber_x002d_Billing_x002f: client.MobileNumber_x002d_Billing_x002f || '',
-            CommercialsDecided: client.CommercialsDecided || '',
-            PaymentPeriod: client.PaymentPeriod || '',
-            ReplacementPeriod: client.ReplacementPeriod || '',
-            GSTNumber: client.GSTNumber || '',
-            ClientWebsite: client.ClientWebsite || '',
-            LinkedinProfile1: client.LinkedinProfile1 || '',
-            Linkedinprofile2: client.Linkedinprofile2 || '',
-            ClientIndustry: client.ClientIndustry || '',
-            status: client.status || ''
-  });
-  setClientID(client.ClientID);
-} else {
-  console.warn("Client not found for ClientID:", id);
-}
+      setNumericId(client.ID);
+      setClientID(client.CLIENTId0.toString());
+    } else {
+      // ADD MODE
+      const items = await list.items
+        .orderBy("CLIENTId0", false)
+        .select("CLIENTId0")
+        .top(1)();
 
-
-      } else {
-        // CREATE MODE: generate new ClientID safely
-        const allItems: IClient[] = await list.items.select("ClientID")();
-
-        const numbers = allItems
-          .map(item => {
-            const cid = item.ClientID?.trim();
-            if (!cid) return 0;
-            const parts = cid.split("-");
-            return parts[1] ? parseInt(parts[1], 10) : 0;
-          })
-          .filter((n): n is number => !isNaN(n)); // TypeScript safe filter
-
-        const maxNumber = numbers.length > 0 ? Math.max(...numbers) : 0;
-        const newClientID = `JMS-${(maxNumber + 1).toString().padStart(3, "0")}`;
-
-        setClientID(newClientID);
-      }
-
-    } catch (error) {
-      console.error("Error fetching/generating ClientID:", error);
+      const nextClientID = items.length ? items[0].CLIENTId0 + 1 : 1;
+      setClientID(nextClientID.toString());
+      setFormData((prev: any) => ({ ...prev, CLIENTId0: nextClientID }));
     }
   };
 
-  fetchClient();
+  fetchClientOrNextId();
 }, [id, sp]);
 
 
-  // Submit form - add new or update existing
-  const handleSubmit = async () => {
-    try {
-      if (id) {
-        // Update existing client
-        await sp.web.lists.getByTitle("client list").items.getById(parseInt(id)).update({
-          SalesPersonName: formData.SalesPersonName,
-          DateofAgreement: formData.DateofAgreement,
-          ClientName: formData.ClientName,
-          ClientLocation: formData.ClientLocation,
-          ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
-          ClientLocation_x003a_City: formData.ClientLocation_x003a_City,
-          ClientLocation_x003a_State: formData.ClientLocation_x003a_State,
-          ClientLocation_x003a_Country_x00: formData.ClientLocation_x003a_Country_x00,
-          ClientLocation_x003a_PostalCode: formData.ClientLocation_x003a_PostalCode,
-          ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
-          ContactPersonforHiring: formData.ContactPersonforHiring,
-          EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
-          Mobilenumber: formData.Mobilenumber,
-          Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
-          EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-          MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
-          CommercialsDecided: formData.CommercialsDecided,
-          PaymentPeriod: formData.PaymentPeriod,
-          ReplacementPeriod: formData.ReplacementPeriod,
-          GSTNumber: formData.GSTNumber,
-          ClientWebsite: formData.ClientWebsite,
-          LinkedinProfile1: formData.LinkedinProfile1,
-          Linkedinprofile2: formData.Linkedinprofile2,
-          ClientIndustry: formData.ClientIndustry,
-          status: formData.status,
-        });
-        alert(`Client updated successfully!`);
-      } else {
-        // Add new client
-        await sp.web.lists.getByTitle("client list").items.add({
-          ClientID: clientID,
-          SalesPersonName: formData.SalesPersonName,
-          DateofAgreement: formData.DateofAgreement,
-          ClientName: formData.ClientName,
-          ClientLocation: formData.ClientLocation,
-          ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
-          ClientLocation_x003a_City: formData.ClientLocation_x003a_City,
-          ClientLocation_x003a_State: formData.ClientLocation_x003a_State,
-          ClientLocation_x003a_Country_x00: formData.ClientLocation_x003a_Country_x00,
-          ClientLocation_x003a_PostalCode: formData.ClientLocation_x003a_PostalCode,
-          ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
-          ContactPersonforHiring: formData.ContactPersonforHiring,
-          EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
-          Mobilenumber: formData.Mobilenumber,
-          Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
-          EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-          MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
-          CommercialsDecided: formData.CommercialsDecided,
-          PaymentPeriod: formData.PaymentPeriod,
-          ReplacementPeriod: formData.ReplacementPeriod,
-          GSTNumber: formData.GSTNumber,
-          ClientWebsite: formData.ClientWebsite,
-          LinkedinProfile1: formData.LinkedinProfile1,
-          Linkedinprofile2: formData.Linkedinprofile2,
-          ClientIndustry: formData.ClientIndustry,
-          status: formData.status,
-        });
-        alert(`Client created successfully! Assigned ID: ${clientID}`);
-        navigate('/totalclients'); // go back to clients list
+
+// Submit form
+const handleSubmit = async () => {
+  try {
+    const list = sp.web.lists.getByTitle("client list");
+
+    if (id) {
+      // EDIT MODE: find the numeric SharePoint item ID using CLIENTId0
+      const numericClientId = Number(formData.CLIENTId0);
+
+      const items = await list.items
+        .filter(`CLIENTId0 eq ${numericClientId}`) // ensure numeric comparison
+        .select("ID")
+        .top(1)();
+
+      if (!items.length) {
+        alert("Client not found!");
+        return;
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Error submitting form');
+
+const itemId: number = items[0].ID; // enforce numeric type
+
+
+      await list.items.getById(itemId).update({
+        SalesPersonName: formData.SalesPersonName,
+        DateofAgreement: formData.DateofAgreement,
+        ClientName: formData.ClientName,
+        ClientLocation: formData.ClientLocation,
+        ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
+        ClientLocation_x003a_City: formData.ClientLocation_x003a_City,
+        ClientLocation_x003a_State: formData.ClientLocation_x003a_State,
+        ClientLocation_x003a_Country_x00: formData.ClientLocation_x003a_Country_x00,
+        ClientLocation_x003a_PostalCode: formData.ClientLocation_x003a_PostalCode,
+        ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
+        ContactPersonforHiring: formData.ContactPersonforHiring,
+        EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
+        Mobilenumber: formData.Mobilenumber,
+        Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
+        EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
+        MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
+        CommercialsDecided: formData.CommercialsDecided,
+        PaymentPeriod: formData.PaymentPeriod,
+        ReplacementPeriod: formData.ReplacementPeriod,
+        GSTNumber: formData.GSTNumber,
+        ClientWebsite: formData.ClientWebsite,
+        LinkedinProfile1: formData.LinkedinProfile1,
+        Linkedinprofile2: formData.Linkedinprofile2,
+        ClientIndustry: formData.ClientIndustry,
+        status: formData.status,
+      });
+
+      alert(`Client ${formData.CLIENTId0} updated successfully!`);
+
+    } else {
+      // ADD MODE: calculate next numeric CLIENTId0
+      const items = await list.items
+        .orderBy("CLIENTId0", false)
+        .select("CLIENTId0")
+        .top(1)();
+
+      const nextClientID = items.length ? items[0].CLIENTId0 + 1 : 1;
+
+      await list.items.add({
+        CLIENTId0: nextClientID,
+        SalesPersonName: formData.SalesPersonName,
+        DateofAgreement: formData.DateofAgreement,
+        ClientName: formData.ClientName,
+        ClientLocation: formData.ClientLocation,
+        ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
+        ClientLocation_x003a_City: formData.ClientLocation_x003a_City,
+        ClientLocation_x003a_State: formData.ClientLocation_x003a_State,
+        ClientLocation_x003a_Country_x00: formData.ClientLocation_x003a_Country_x00,
+        ClientLocation_x003a_PostalCode: formData.ClientLocation_x003a_PostalCode,
+        ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
+        ContactPersonforHiring: formData.ContactPersonforHiring,
+        EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
+        Mobilenumber: formData.Mobilenumber,
+        Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
+        EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
+        MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
+        CommercialsDecided: formData.CommercialsDecided,
+        PaymentPeriod: formData.PaymentPeriod,
+        ReplacementPeriod: formData.ReplacementPeriod,
+        GSTNumber: formData.GSTNumber,
+        ClientWebsite: formData.ClientWebsite,
+        LinkedinProfile1: formData.LinkedinProfile1,
+        Linkedinprofile2: formData.Linkedinprofile2,
+        ClientIndustry: formData.ClientIndustry,
+        status: formData.status,
+      });
+
+      alert(`Client created successfully! Assigned CLIENTId0: ${nextClientID}`);
+      navigate('/totalclients');
     }
-  };
+
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert("Error submitting form");
+  }
+};
+
+
 
    React.useEffect(() => {
       const style = document.createElement("style");
@@ -338,7 +276,7 @@ if (client) {
 <div className={styles.clientFormWrapper}>
   <h2>Client Onboarding Form</h2>
 <div className={styles.formGrid}>
-  <TextField  label="Client ID"  value={clientID} readOnly  styles={{    fieldGroup: { backgroundColor: "#fff" } }}/>
+  <TextField  label="Client ID"  value={CLIENTId0} readOnly  styles={{    fieldGroup: { backgroundColor: "#fff" } }}/>
   <TextField label="Sales Person Name" value={formData.SalesPersonName} onChange={(_, val) => handleChange('SalesPersonName', val)} />
   <DatePicker label="Date of Agreement" onSelectDate={(date) => handleChange('DateofAgreement', date)} />
   <TextField label="Client Name" value={formData.ClientName} onChange={(_, val) => handleChange('ClientName', val)} />

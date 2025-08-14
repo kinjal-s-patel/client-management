@@ -14,7 +14,7 @@ export interface ITotalClientsProps {
 }
 
 interface IClient {
-  ClientID: string;
+  CLIENTId0: number;
   ClientName: string;
   EmailAddress_x002d_Hiring: string;
   ContactPersonforHiring: string;
@@ -45,7 +45,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
   .items
   .select(
     "Id",
-    "ClientID",
+    "CLIENTId0",
     "ClientName",
     "ContactPersonforHiring",
     "EmailAddress_x002d_Hiring",
@@ -205,7 +205,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
             <tbody>
               {paginatedClients.map(client => (
                 <tr key={client.Id}>
-                  <td>{client.ClientID}</td>
+                  <td>{client.CLIENTId0}</td>
                   <td>{client.ClientName}</td>
                   <td>{client.ContactPersonforHiring}</td>
                   <td>{client.EmailAddress_x002d_Hiring}</td>
@@ -215,7 +215,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                   <td>{client.Mobilenumber}</td>
                   <td>{client.ClientLocation_x003a_Name}</td>
                   <td>{client.ClientIndustry}</td>
-                  <td><button className={styles.editButton} onClick={() => navigate(`/clientform/${client.ClientID}`)}>Edit</button></td>                  
+                  <td><button className={styles.editButton} onClick={() => navigate(`/clientform/${client.CLIENTId0 }`)}>Edit</button></td>                  
                 </tr>
               ))}
             </tbody>
