@@ -17,11 +17,11 @@ const statusOptions: IDropdownOption[] = [
 ];
 
 const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
   const sp = spfi().using(SPFx(context));
-const { id } = useParams(); // This is actually the ClientID (CUST-001)
+  const { id } = useParams();
   const [CLIENTId0, setClientID] = useState<string>("");
-    const [, setNumericId] = useState<number | null>(null); // hidden numeric ID
+  const [, setNumericId] = useState<number | null>(null);
 
   
   const [formData, setFormData] = useState<any>({
@@ -53,45 +53,47 @@ const { id } = useParams(); // This is actually the ClientID (CUST-001)
   });
   
   const handleChange = (field: string, value: any) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-useEffect(() => {
-  const fetchClientOrNextId = async () => {
-    const list = sp.web.lists.getByTitle("client list");
+  useEffect(() => {
+    const fetchClientOrNextId = async () => {
+      try {
+        const list = sp.web.lists.getByTitle("client list");
 
-    if (id) {
-      // EDIT MODE
-      const items = await list.items
-        .filter(`CLIENTId0 eq ${id}`)
-        .top(1)();
-      if (!items.length) return;
+        if (id) {
+          // EDIT MODE
+          const items = await list.items
+            .filter(`CLIENTId0 eq '${id}'`)
+            .top(1)();
+          
+          if (items.length > 0) {
+            const client = items[0];
+            setFormData({
+              ...client,
+              DateofAgreement: client.DateofAgreement ? new Date(client.DateofAgreement) : null
+            });
+            setNumericId(client.ID);
+            setClientID(client.CLIENTId0.toString());
+          }
+        } else {
+          // ADD MODE
+          const items = await list.items
+            .orderBy("CLIENTId0", false)
+            .select("CLIENTId0")
+            .top(1)();
 
-      // Merge with previous formData instead of replacing it
- const client = items[0];
-setFormData((prev: any) => ({
-  ...prev,
-  ...client,
-  DateofAgreement: client.DateofAgreement ? new Date(client.DateofAgreement) : undefined
-}));
+          const nextClientID = items.length ? items[0].CLIENTId0 + 1 : 1;
+          setClientID(nextClientID.toString());
+          setFormData((prev: any) => ({ ...prev, CLIENTId0: nextClientID }));
+        }
+      } catch (error) {
+        console.error("Error fetching client data:", error);
+      }
+    };
 
-      setNumericId(client.ID);
-      setClientID(client.CLIENTId0.toString());
-    } else {
-      // ADD MODE
-      const items = await list.items
-        .orderBy("CLIENTId0", false)
-        .select("CLIENTId0")
-        .top(1)();
-
-      const nextClientID = items.length ? items[0].CLIENTId0 + 1 : 1;
-      setClientID(nextClientID.toString());
-      setFormData((prev: any) => ({ ...prev, CLIENTId0: nextClientID }));
-    }
-  };
-
-  fetchClientOrNextId();
-}, [id, sp]);
+    fetchClientOrNextId();
+  }, [id, sp]);
 
 
 
