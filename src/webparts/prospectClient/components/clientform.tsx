@@ -279,38 +279,197 @@ alert("✅ Client added successfully!");
         {/* Client Form */}
         <div className={styles.clientFormWrapper}>
           <h2>Client Onboarding Form</h2>
-          <div className={styles.formGrid}>
-            <TextField label="Client ID" value={CLIENTId0} readOnly />
-            <TextField label="Sales Person Name" value={formData.SalesPersonName} onChange={(_, val) => handleChange('SalesPersonName', val)} />
-            <DatePicker
-              label="Date of Agreement"
-              onSelectDate={(date) => handleChange('DateofAgreement', date)}
-              value={formData.DateofAgreement ? new Date(formData.DateofAgreement) : undefined}
-            />
-            <TextField label="Client Name" value={formData.ClientName || ""} onChange={(_, val) => handleChange('ClientName', val || "")} />
-            <TextField label="Client Location" value={formData.ClientLocation || ""} onChange={(_, val) => handleChange('ClientLocation', val || "")} />
-            <TextField label="Street" value={formData.ClientLocation_x003a_Street || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_Street', val || "")} />
-            <TextField label="City" value={formData.ClientLocation_x003a_City || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_City', val || "")} />
-            <TextField label="State" value={formData.ClientLocation_x003a_State || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_State', val || "")} />
-            <TextField label="Country/Region" value={formData.ClientLocation_x003a_Country_x00 || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_Country_x00', val || "")} />
-            <TextField label="Postal Code" value={formData.ClientLocation_x003a_PostalCode || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_PostalCode', val || "")} />
-            <TextField label="Location Name" value={formData.ClientLocation_x003a_Name || ""} onChange={(_, val) => handleChange('ClientLocation_x003a_Name', val || "")} />
-            <TextField label="Contact Person for Hiring" value={formData.ContactPersonforHiring || ""} onChange={(_, val) => handleChange('ContactPersonforHiring', val || "")} />
-            <TextField label="Email - Hiring" value={formData.EmailAddress_x002d_Hiring || ""} onChange={(_, val) => handleChange('EmailAddress_x002d_Hiring', val || "")} />
-            <TextField label="Mobile Number" value={formData.Mobilenumber || ""} onChange={(_, val) => handleChange('Mobilenumber', val || "")} />
-            <TextField label="Billing/Accounting" value={formData.Billing_x002f_Accounting || ""} onChange={(_, val) => handleChange('Billing_x002f_Accounting', val || "")} />
-            <TextField label="Email - Accounting/Billing" value={formData.EmailAddress_x002d_Accounting_x0 || ""} onChange={(_, val) => handleChange('EmailAddress_x002d_Accounting_x0', val || "")} />
-            <TextField label="Mobile - Accounting/Billing" value={formData.MobileNumber_x002d_Billing_x002f || ""} onChange={(_, val) => handleChange('MobileNumber_x002d_Billing_x002f', val || "")} />
-            <TextField label="Commercials Decided" value={formData.CommercialsDecided || ""} onChange={(_, val) => handleChange('CommercialsDecided', val || "")} />
-            <TextField label="Payment Period" type="number" value={formData.PaymentPeriod?.toString() || ""} onChange={(_, val) => handleChange('PaymentPeriod', val ? parseInt(val, 10) : 0)} />
-            <TextField label="Replacement Period" type="number" value={formData.ReplacementPeriod?.toString() || ""} onChange={(_, val) => handleChange('ReplacementPeriod', val ? parseInt(val, 10) : 0)} />
-            <TextField label="GST Number" value={formData.GSTNumber || ""} onChange={(_, val) => handleChange('GSTNumber', val || "")} />
-            <TextField label="Client Website" value={formData.ClientWebsite || ""} onChange={(_, val) => handleChange('ClientWebsite', val || "")} />
-            <TextField label="LinkedIn Profile 1" value={formData.LinkedinProfile1 || ""} onChange={(_, val) => handleChange('LinkedinProfile1', val || "")} />
-            <TextField label="LinkedIn Profile 2" value={formData.Linkedinprofile2 || ""} onChange={(_, val) => handleChange('Linkedinprofile2', val || "")} />
-            <TextField label="Client Industry" value={formData.ClientIndustry || ""} onChange={(_, val) => handleChange('ClientIndustry', val || "")} />
-            <Dropdown label="Status" options={statusOptions} selectedKey={formData.status || undefined} onChange={(_, option) => handleChange('status', option?.key || "")} />
-          </div>
+<div className={styles.formGrid}>
+  <TextField label="Client ID" value={CLIENTId0} readOnly />
+
+  <TextField
+    label="Sales Person Name"
+    placeholder="Enter the sales person’s full name"
+    value={formData.SalesPersonName || ""}
+    onChange={(_, val) => handleChange('SalesPersonName', val || "")}
+  />
+
+  <DatePicker
+    label="Date of Agreement"
+    placeholder="Select agreement date"
+    onSelectDate={(date) => handleChange('DateofAgreement', date)}
+    value={formData.DateofAgreement ? new Date(formData.DateofAgreement) : undefined}
+  />
+
+  <TextField
+    label="Client Name"
+    placeholder="Enter the client company name"
+    value={formData.ClientName || ""}
+    onChange={(_, val) => handleChange('ClientName', val || "")}
+  />
+
+  <TextField
+    label="Client Location"
+    placeholder="General client location"
+    value={formData.ClientLocation || ""}
+    onChange={(_, val) => handleChange('ClientLocation', val || "")}
+  />
+
+  <TextField
+    label="Street"
+    placeholder="Street address"
+    value={formData.ClientLocation_x003a_Street || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_Street', val || "")}
+  />
+
+  <TextField
+    label="City"
+    placeholder="City"
+    value={formData.ClientLocation_x003a_City || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_City', val || "")}
+  />
+
+  <TextField
+    label="State"
+    placeholder="State / Province"
+    value={formData.ClientLocation_x003a_State || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_State', val || "")}
+  />
+
+  <TextField
+    label="Country/Region"
+    placeholder="Country or Region"
+    value={formData.ClientLocation_x003a_Country_x00 || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_Country_x00', val || "")}
+  />
+
+  <TextField
+    label="Postal Code"
+    type="number"
+    placeholder="Postal / ZIP Code"
+    value={formData.ClientLocation_x003a_PostalCode?.toString() || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_PostalCode',val || "")}
+  />
+
+  <TextField
+    label="Location Name"
+    placeholder="Branch / Office name"
+    value={formData.ClientLocation_x003a_Name || ""}
+    onChange={(_, val) => handleChange('ClientLocation_x003a_Name', val || "")}
+  />
+
+  <TextField
+    label="Contact Person for Hiring"
+    placeholder="Full name of contact person"
+    value={formData.ContactPersonforHiring || ""}
+    onChange={(_, val) => handleChange('ContactPersonforHiring', val || "")}
+  />
+
+  <TextField
+    label="Email - Hiring"
+    type="email"
+    placeholder="example@domain.com"
+    value={formData.EmailAddress_x002d_Hiring || ""}
+    onChange={(_, val) => handleChange('EmailAddress_x002d_Hiring', val || "")}
+  />
+
+  <TextField
+    label="Mobile Number"
+    type="tel"
+    placeholder="Enter hiring contact number"
+    value={formData.Mobilenumber || ""}
+    onChange={(_, val) => handleChange('Mobilenumber', val || "")}
+  />
+
+  <TextField
+    label="Billing/Accounting"
+    placeholder="Billing/Accounting contact name"
+    value={formData.Billing_x002f_Accounting || ""}
+    onChange={(_, val) => handleChange('Billing_x002f_Accounting', val || "")}
+  />
+
+  <TextField
+    label="Email - Accounting/Billing"
+    type="email"
+    placeholder="billing@domain.com"
+    value={formData.EmailAddress_x002d_Accounting_x0 || ""}
+    onChange={(_, val) => handleChange('EmailAddress_x002d_Accounting_x0', val || "")}
+  />
+
+  <TextField
+    label="Mobile - Accounting/Billing"
+    type="tel"
+    placeholder="Enter accounting contact number"
+    value={formData.MobileNumber_x002d_Billing_x002f || ""}
+    onChange={(_, val) => handleChange('MobileNumber_x002d_Billing_x002f', val || "")}
+  />
+
+  <TextField
+    label="Commercials Decided"
+    multiline
+    placeholder="Enter agreed commercials"
+    value={formData.CommercialsDecided || ""}
+    onChange={(_, val) => handleChange('CommercialsDecided', val || "")}
+  />
+
+  <TextField
+    label="Payment Period"
+    type="number"
+    placeholder="Enter payment period in days"
+    value={formData.PaymentPeriod?.toString() || ""}
+    onChange={(_, val) => handleChange('PaymentPeriod', val ? parseInt(val, 10) : 0)}
+  />
+
+  <TextField
+    label="Replacement Period"
+    type="number"
+    placeholder="Enter replacement period in days"
+    value={formData.ReplacementPeriod?.toString() || ""}
+    onChange={(_, val) => handleChange('ReplacementPeriod', val ? parseInt(val, 10) : 0)}
+  />
+
+  <TextField
+    label="GST Number"
+    placeholder="Enter GST number (if applicable)"
+    value={formData.GSTNumber || ""}
+    onChange={(_, val) => handleChange('GSTNumber', val || "")}
+  />
+
+  <TextField
+    label="Client Website"
+    type="url"
+    placeholder="https://www.clientwebsite.com"
+    value={formData.ClientWebsite || ""}
+    onChange={(_, val) => handleChange('ClientWebsite', val || "")}
+  />
+
+  <TextField
+    label="LinkedIn Profile 1"
+    type="url"
+    placeholder="https://linkedin.com/in/..."
+    value={formData.LinkedinProfile1 || ""}
+    onChange={(_, val) => handleChange('LinkedinProfile1', val || "")}
+  />
+
+  <TextField
+    label="LinkedIn Profile 2"
+    type="url"
+    placeholder="https://linkedin.com/in/..."
+    value={formData.Linkedinprofile2 || ""}
+    onChange={(_, val) => handleChange('Linkedinprofile2', val || "")}
+  />
+
+  <TextField
+    label="Client Industry"
+    placeholder="Enter client’s industry (e.g. IT, Finance, Healthcare)"
+    value={formData.ClientIndustry || ""}
+    onChange={(_, val) => handleChange('ClientIndustry', val || "")}
+  />
+
+  <Dropdown
+    label="Status"
+    placeholder="Select current status"
+    options={statusOptions}
+    selectedKey={formData.status || undefined}
+    onChange={(_, option) => handleChange('status', option?.key || "")}
+  />
+</div>
+
 
           {/* Submit */}
           <div className={styles.submitSection}>

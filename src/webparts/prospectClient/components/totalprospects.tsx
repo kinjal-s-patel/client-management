@@ -47,6 +47,10 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
   const [prospects, setProspects] = useState<IProspect[]>([]); // <-- Fix: add setter
   const [searchTerm, setSearchTerm] = useState('');
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+  
   // 1️⃣ Delete handler
 const handleDelete = async (prospectID: string) => {
   const confirmDelete = window.confirm("Are you sure you want to delete this prospect?");
@@ -100,6 +104,9 @@ const handleDelete = async (prospectID: string) => {
     p.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.ContactPersonName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+   // Pagination calculations
+  const totalPages = Math.max(1, Math.ceil(filteredProspects.length / itemsPerPage));
 
   useEffect(() => {
     const style = document.createElement("style");
@@ -232,6 +239,32 @@ const handleDelete = async (prospectID: string) => {
             </tbody>
           </table>
         </div>
+
+        
+        {/* Pagination */}
+<div
+  className={styles.pagination}
+  style={{ marginTop: '2rem', textAlign: 'center', paddingBottom: '1rem' }}
+>
+  <button
+    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+    disabled={currentPage === 1}
+    style={{ marginRight: '1rem', padding: '0.5rem 1rem' }}
+  >
+    Previous
+  </button>
+  <span style={{ margin: '0 1rem' }}>
+    Page {currentPage} of {totalPages}
+  </span>
+  <button
+    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+    disabled={currentPage === totalPages}
+    style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
+  >
+    Next
+  </button>
+</div>
+
       </div>
 
       {/* Footer */}

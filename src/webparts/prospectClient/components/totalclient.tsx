@@ -264,25 +264,29 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
         </div>
 
         {/* Pagination */}
-        <div className={styles.pagination} style={{ marginTop: '1rem', textAlign: 'center' }}>
-          <button
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            style={{ marginRight: '1rem' }}
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            style={{ marginLeft: '1rem' }}
-          >
-            Next
-          </button>
-        </div>
+<div
+  className={styles.pagination}
+  style={{ marginTop: '2rem', textAlign: 'center', paddingBottom: '1rem' }}
+>
+  <button
+    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+    disabled={currentPage === 1}
+    style={{ marginRight: '1rem', padding: '0.5rem 1rem' }}
+  >
+    Previous
+  </button>
+  <span style={{ margin: '0 1rem' }}>
+    Page {currentPage} of {totalPages}
+  </span>
+  <button
+    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+    disabled={currentPage === totalPages}
+    style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
+  >
+    Next
+  </button>
+</div>
+
       </div>
 
       {/* Footer */}
