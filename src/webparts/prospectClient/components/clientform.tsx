@@ -16,6 +16,27 @@ const statusOptions: IDropdownOption[] = [
   { key: 'Inactive', text: 'Inactive' },
 ];
 
+const replacementPeriodOptions: IDropdownOption[] = [
+  { key: '60', text: '60' },
+  { key: '90', text: '90' },
+];
+
+
+const paymentPeriodOptions: IDropdownOption[] = [
+  { key: '7', text: '7' },
+  { key: '15', text: '15' },
+  { key: '30', text: '30' },
+  { key: '45', text: '45' },
+];
+
+const clientIndustryOptions: IDropdownOption[] = [
+  { key: 'IT', text: 'IT' },
+  { key: 'Maintenance', text: 'Maintenance' },
+  { key: 'Healthcare', text: 'Healthcare' },
+  { key: 'Recruitment', text: 'Recruitment' },
+  { key: 'Finance', text: 'Finance' },
+];
+
 const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
   const navigate = useNavigate();
   const sp = spfi().using(SPFx(context));
@@ -32,7 +53,7 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
     ClientLocation_x003a_Street: '',
     ClientLocation_x003a_City: '',
     ClientLocation_x003a_State: '',
-    ClientLocation_x003a_Country_x00: '',
+      ClientLocation_x003a_Country_x00: "India",
     ClientLocation_x003a_PostalCode: '',
     ClientLocation_x003a_Name: '',
     ContactPersonforHiring: '',
@@ -331,12 +352,12 @@ alert("✅ Client added successfully!");
     onChange={(_, val) => handleChange('ClientLocation_x003a_State', val || "")}
   />
 
-  <TextField
-    label="Country/Region"
-    placeholder="Country or Region"
-    value={formData.ClientLocation_x003a_Country_x00 || ""}
-    onChange={(_, val) => handleChange('ClientLocation_x003a_Country_x00', val || "")}
-  />
+<TextField
+  label="Country/Region"
+  placeholder="Country or Region"
+  value={formData.ClientLocation_x003a_Country_x00 || ""}
+  onChange={(_, val) => handleChange('ClientLocation_x003a_Country_x00', val || "")}
+/>
 
   <TextField
     label="Postal Code"
@@ -407,21 +428,24 @@ alert("✅ Client added successfully!");
     onChange={(_, val) => handleChange('CommercialsDecided', val || "")}
   />
 
-  <TextField
-    label="Payment Period"
-    type="number"
-    placeholder="Enter payment period in days"
-    value={formData.PaymentPeriod?.toString() || ""}
-    onChange={(_, val) => handleChange('PaymentPeriod', val ? parseInt(val, 10) : 0)}
-  />
+<Dropdown
+  label="Payment Period"
+  placeholder="Select Payment Period"
+  selectedKey={formData.PaymentPeriod?.toString() || ""}
+  onChange={(_, option) =>
+    handleChange('PaymentPeriod', option?.key ? parseInt(option.key.toString(), 10) : 0)
+  }
+  options={paymentPeriodOptions}
+/>
 
-  <TextField
-    label="Replacement Period"
-    type="number"
-    placeholder="Enter replacement period in days"
-    value={formData.ReplacementPeriod?.toString() || ""}
-    onChange={(_, val) => handleChange('ReplacementPeriod', val ? parseInt(val, 10) : 0)}
-  />
+
+<Dropdown
+  label="Replacement Period"
+  placeholder="Select Replacement Period"
+  selectedKey={formData.ReplacementPeriod?.toString() || ""}
+  onChange={(_, option) => handleChange('ReplacementPeriod', option?.key ? parseInt(option.key.toString(), 10) : 0)}
+  options={replacementPeriodOptions}
+/>
 
   <TextField
     label="GST Number"
@@ -454,12 +478,15 @@ alert("✅ Client added successfully!");
     onChange={(_, val) => handleChange('Linkedinprofile2', val || "")}
   />
 
-  <TextField
-    label="Client Industry"
-    placeholder="Enter client’s industry (e.g. IT, Finance, Healthcare)"
-    value={formData.ClientIndustry || ""}
-    onChange={(_, val) => handleChange('ClientIndustry', val || "")}
-  />
+<Dropdown
+  label="Client Industry"
+  placeholder="Select Industry"
+  selectedKey={formData.Industry || ""}
+  onChange={(_, option) =>
+    handleChange('Industry', option?.key ? option.key.toString() : "")
+  }
+  options={clientIndustryOptions}
+/>
 
   <Dropdown
     label="Status"

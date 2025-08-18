@@ -8,6 +8,7 @@ import styles from './totalclient.module.scss';
 import logo from '../assets/LOGO.png';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 
+
 export interface ITotalClientsProps {
   sp: any; // spfi object passed from parent
   context: WebPartContext;
@@ -217,7 +218,8 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <th>Mobile</th>
                 <th>Location</th>
                 <th>Industry</th>
-                <th>Action</th>
+                <th>Agreement</th>
+                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -234,6 +236,15 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                   <td>{client.Mobilenumber}</td>
                   <td>{client.ClientLocation_x003a_Name}</td>
                   <td>{client.ClientIndustry}</td>
+                   <td>
+                    <button
+                      className={styles.Button}
+                      onClick={() => navigate(`/clientform/${client.CLIENTId0}`)}
+                    >
+                      Generate Agreement
+                    </button>
+                  
+                  </td>
                   <td>
                     <button
                       className={styles.editButton}
@@ -249,6 +260,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                       Delete
                     </button>
                   </td>
+
                 </tr>
               ))}
 

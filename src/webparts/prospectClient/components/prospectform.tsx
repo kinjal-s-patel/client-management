@@ -9,7 +9,7 @@ import { Accordion, AccordionItem, AccordionHeader, AccordionPanel } from "@flue
 import { useNavigate, useParams } from 'react-router-dom';
 import logo from '../assets/LOGO.png';
 
-// interface IProspectFormProps {
+// interface IProspect {
 //   context: any; // SPFx context
 // }
 
@@ -65,7 +65,7 @@ const ProspectForm: React.FC<{ context: any }> = ({ context }) => {
     additionalDesignation: '',
     additionalMobilenumber: '',
     SalespersonName: '',
-    DateofFirstContact: '',
+  DateofFirstContact: new Date().toISOString().split('T')[0], // default to today
     FollowUpDate1: '',
     FollowUpDate2: '',
     FollowUpDate3: '',
@@ -76,6 +76,17 @@ const ProspectForm: React.FC<{ context: any }> = ({ context }) => {
     ClientResponse: '',
     NextSteps: ''
   });
+
+useEffect(() => {
+  const setCurrentUser = async () => {
+    const spInstance = spfi().using(SPFx(context)); // use destructured context
+    const currentUser = await spInstance.web.currentUser();
+    setProspectInfo(prev => ({ ...prev, SalespersonName: currentUser.Title }));
+  };
+
+  setCurrentUser();
+}, [context]); // include context in dependency array
+
 
   useEffect(() => {
     if (prospectId) {
@@ -288,8 +299,7 @@ const ProspectForm: React.FC<{ context: any }> = ({ context }) => {
       } 
       else if (step === 3 && itemId) {
         const requiredFields = [
-          { key: 'CurrentStatus', label: 'Current Status' },
-          { key: 'ClientResponse', label: 'Client Response' }
+          { key: 'CurrentStatus', label: 'Current Status' }
         ];
 
         const missing = requiredFields
@@ -526,24 +536,25 @@ try {
               <AccordionHeader>2. Sales Interaction Details</AccordionHeader>
               <AccordionPanel>
                 <div className={styles.formRow}>
+<div className={styles.formGroup}>
+  <label>Salesperson Name <span className={styles.required}>*</span></label>
+  <input
+    type="text"
+    value={prospectInfo.SalespersonName}
+    onChange={(e) => handleChange('prospectInfo', 'SalespersonName', e.target.value)}
+    required
+  />
+</div>
+
                   <div className={styles.formGroup}>
-                    <label>Salesperson Name <span className={styles.required}>*</span></label>
-                    <input
-                      type="text"
-                      value={prospectInfo.SalespersonName}
-                      onChange={(e) => handleChange('prospectInfo', 'SalespersonName', e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className={styles.formGroup}>
-                    <label>Date of First Contact <span className={styles.required}>*</span></label>
-                    <input
-                      type="date"
-                      value={prospectInfo.DateofFirstContact}
-                      onChange={(e) => handleChange('prospectInfo', 'DateofFirstContact', e.target.value)}
-                      required
-                    />
-                  </div>
+  <label>Date of First Contact <span className={styles.required}>*</span></label>
+  <input
+    type="date"
+    value={prospectInfo.DateofFirstContact}
+    onChange={(e) => handleChange('prospectInfo', 'DateofFirstContact', e.target.value)}
+    required
+  />
+</div>
                   <div className={styles.formGroup}>
                     <label>Follow Up Date 1 <span className={styles.required}>*</span></label>
                     <input
@@ -576,13 +587,19 @@ try {
 
                 <div className={styles.formRow}>
                   <div className={styles.formGroup}>
-                    <label>Contact Method</label>
-                    <input
-                      type="text"
-                      value={prospectInfo.ContactMethod}
-                      onChange={(e) => handleChange('prospectInfo', 'ContactMethod', e.target.value)}
-                    />
-                  </div>
+  <label>Contact Method <span className={styles.required}>*</span></label>
+  <select
+    value={prospectInfo.ContactMethod}
+    onChange={(e) => handleChange('prospectInfo', 'ContactMethod', e.target.value)}
+  >
+    <option value="">-- Select Contact Method --</option>
+    <option value="Email">Email</option>
+    <option value="Call">Call</option>
+    <option value="Meeting">Meeting</option>
+    <option value="DM">DM</option>
+  </select>
+</div>
+
                   <div className={styles.formGroup}>
                     <label>Meeting Date</label>
                     <input
@@ -624,21 +641,21 @@ try {
                       <option value="Meeting Scheduled">Meeting Scheduled</option>
                       <option value="Follow-up Needed">Follow-up Needed</option>
                       <option value="Onboarded">Onboarded</option>
-                      <option value="Not Interested">Not Interested</option>
+                      <option value="On Hold">On Hold</option>
                     </select>
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label>Client Response <span className={styles.required}>*</span></label>
+                    <label>Client Response </label>
                     <select
                       value={prospectInfo.ClientResponse}
                       onChange={(e) => handleChange('prospectInfo', 'ClientResponse', e.target.value)}
-                      required
+                      
                     >
                       <option value="">-- Select Response --</option>
                       <option value="Yes – Proceed to Agreement">Yes – Proceed to Agreement</option>
                       <option value="No – Reconnect Later">No – Reconnect Later</option>
-                      <option value="No – Not Interested">No – Not Interested</option>
+                      <option value="In-communication">In-communication</option>
                     </select>
                   </div>
                 </div>
