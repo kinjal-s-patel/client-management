@@ -307,49 +307,49 @@ const ProspectForm: React.FC<{ context: any }> = ({ context }) => {
           NextSteps: prospectInfo.NextSteps
         });
 
-        if (prospectInfo.ClientResponse === "Yes – Proceed to Agreement") {
-          try {
-            // 1️⃣ Fetch next Client ID exactly like Client Form
-            const items = await sp.web.lists.getByTitle("client list")
-              .items.select("ClientID")
-              .orderBy("ID", false)
-              .top(1)();
+if (prospectInfo.ClientResponse === "Yes – Proceed to Agreement") {
+try {
+      // Fetch all client IDs and pick the maximum
+      const items = await sp.web.lists.getByTitle("client list")
+        .items.select("CLIENTId0")
+        .top(5000)(); // fetch up to 5000 clients
 
-            let newClientID = "JMS-001";
-            if (items.length > 0 && items[0].ClientID) {
-              const lastNumber = parseInt(items[0].ClientID.replace("JMS-", ""), 10);
-              const nextNumber = lastNumber + 1;
-              newClientID = `JMS-${String(nextNumber).padStart(3, "0")}`;
-            }
+      let newClientID = 1;
+      if (items.length > 0) {
+        const ids = items
+          .map(i => parseInt(i.CLIENTId0, 10))
+          .filter(n => !isNaN(n));
 
-            // 2️⃣ Add the client
-            await sp.web.lists.getByTitle("client list").items.add({
-              ClientID: newClientID,   // auto-generated
-              ClientName: prospectInfo.CompanyName || "",
-              ContactPersonforHiring: prospectInfo.ContactPersonName || "",
-              EmailAddress_x002d_Hiring: prospectInfo.Email || "",
-              ClientLocation: prospectInfo.Location || "",
-              Mobilenumber: prospectInfo.PhoneNumber ? Number(prospectInfo.PhoneNumber) : null,
-              ClientIndustry: prospectInfo.Industry || "",
-              status: "Active"
-            });
-
-            // // 3️⃣ Update prospect as converted
-            // await sp.web.lists.getByTitle("Prospect List").items.getById(itemId).update({
-            //   Status: "Converted"
-            // });
-
-            alert(`✅ Client added successfully with Client ID: ${newClientID}`);
-              navigate('/totalclient')
-          } catch (err) {
-            console.error("Error adding client:", err);
-            alert("❌ Failed to add client. See console for details.");
-          }
-        } else {
-          alert("✅ Prospect status updated successfully!");
-                alert("🎉 All sections saved successfully!");
-                navigate('/totalprospects')
+        if (ids.length > 0) {
+          const maxId = Math.max(...ids);
+          newClientID = maxId + 1;
         }
+      }
+    // 2️⃣ Add the client → Convert to string!
+   await sp.web.lists.getByTitle("client list").items.add({
+        CLIENTId0: newClientID.toString(),   // string expected
+        ClientName: prospectInfo.CompanyName || "",
+        ContactPersonforHiring: prospectInfo.ContactPersonName || "",
+        EmailAddress_x002d_Hiring: prospectInfo.Email || "",
+        ClientLocation: prospectInfo.Location || "",
+        Mobilenumber: prospectInfo.PhoneNumber ? Number(prospectInfo.PhoneNumber) : null,
+        ClientIndustry: prospectInfo.Industry || "",
+        status: "Active"
+      });
+
+      alert(`✅ Client added successfully with Client ID: ${newClientID}`);
+
+    navigate('/totalclient');
+  } catch (err) {
+    console.error("Error adding client:", err);
+    alert("❌ Failed to add client. See console for details.");
+  }
+} else {
+  alert("✅ Prospect status updated successfully!");
+  alert("🎉 All sections saved successfully!");
+  navigate('/totalprospects');
+}
+
       }
     } catch (err) {
       console.error("Error saving data:", err);
