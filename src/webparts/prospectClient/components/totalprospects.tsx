@@ -39,6 +39,7 @@ interface IProspect {
   CurrentStatus: string;
   ClientResponse: string;
   NextSteps: string;
+  
 }
 
 const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
@@ -160,8 +161,8 @@ const handleDelete = async (prospectID: string) => {
           <div className={styles.logoSection}>
             <img src={logo} alt="Logo" className={styles.logo} />
             <div>
-              <h1 className={styles.title}>Prospect Management</h1>
-              <p className={styles.subtitle}>Track and manage all prospects</p>
+              <h1 className={styles.title}>Client Management</h1>
+              <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
             </div>
           </div>
           <nav className={styles.navBar}>
@@ -170,7 +171,6 @@ const handleDelete = async (prospectID: string) => {
              <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement </button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
              <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
-
           </nav>
         </header>
 
@@ -202,7 +202,7 @@ const handleDelete = async (prospectID: string) => {
                 <th>Follow-up 1</th>
                 <th>Follow-up 2</th>
                 <th>Follow-up 3</th>
-                <th>Meeting Date</th>
+                <th>Client Response</th>
                 <th>Next Steps</th>
                 <th>Action</th>
               </tr>
@@ -221,7 +221,7 @@ const handleDelete = async (prospectID: string) => {
                   <td>{p.FollowUpDate1 ? new Date(p.FollowUpDate1).toLocaleDateString() : ''}</td>
                   <td>{p.FollowUpDate2 ? new Date(p.FollowUpDate2).toLocaleDateString() : ''}</td>
                   <td>{p.FollowUpDate3 ? new Date(p.FollowUpDate3).toLocaleDateString() : ''}</td>
-                  <td>{p.MeetingDate ? new Date(p.MeetingDate).toLocaleDateString() : ''}</td>
+                  <td>{p.ClientResponse}</td>
                   <td>{p.NextSteps}</td>
                   <td>
                     <button className={styles.editButton} onClick={() => navigate(`/prospectform/edit/${p.ProspectID}`)}>Edit</button>
