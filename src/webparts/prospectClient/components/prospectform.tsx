@@ -348,7 +348,7 @@ const ProspectForm: React.FC<{ context: any }> = ({ context }) => {
         } else {
           alert("✅ Prospect status updated successfully!");
                 alert("🎉 All sections saved successfully!");
-                navigate('/totalprospect')
+                navigate('/totalprospects')
         }
       }
     } catch (err) {

@@ -14,15 +14,17 @@ export interface ITotalClientsProps {
 }
 
 interface IClient {
+  Id: number; // <- needed for React key & delete
   CLIENTId0: number;
   ClientName: string;
+  SalesPersonName?: string;
   EmailAddress_x002d_Hiring: string;
   ContactPersonforHiring: string;
   Mobilenumber: string;
   ClientLocation_x003a_Name: string;
   ClientIndustry: string;
-  DateofAgreement: string;
-  GSTNumber: number;
+  DateofAgreement?: string;
+  GSTNumber?: string | number;
   status: string;
   [key: string]: any;
 }
@@ -33,33 +35,34 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState(''); // '' means all
 
-  // Pagination states
+  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Fetch clients
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const items = await sp.web.lists
-  .getByTitle("client list")
-  .items
-  .select(
-    "Id",
-    "CLIENTId0",
-    "ClientName",
-    "ContactPersonforHiring",
-    "EmailAddress_x002d_Hiring",
-    "DateofAgreement",
-    "GSTNumber",
-    "status",
-    "Mobilenumber",
-    "ClientLocation_x003a_Name",
-    "ClientIndustry"
-  )
-  .orderBy("Id", false)();
+        const items: IClient[] = await sp.web.lists
+          .getByTitle("client list")
+          .items
+          .select(
+            "Id",
+            "CLIENTId0",
+            "ClientName",
+            "SalesPersonName",
+            "ContactPersonforHiring",
+            "EmailAddress_x002d_Hiring",
+            "DateofAgreement",
+            "GSTNumber",
+            "status",
+            "Mobilenumber",
+            "ClientLocation_x003a_Name",
+            "ClientIndustry"
+          )
+          .orderBy("Id", false)();
 
-
-        setClients(items);
+        setClients(items || []);
       } catch (error) {
         console.error("Error fetching clients:", error);
       }
@@ -68,14 +71,29 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
     fetchClients();
   }, [sp]);
 
+  // Delete by SharePoint Item Id
+  const handleDelete = async (itemId: number) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this client?");
+    if (!confirmDelete) return;
+
+    try {
+      await sp.web.lists.getByTitle("client list").items.getById(itemId).delete();
+      setClients(prev => prev.filter(c => c.Id !== itemId));
+      alert("Client deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      alert("Failed to delete client.");
+    }
+  };
+
   // Filter clients by search term and status
   const filteredClients = clients.filter(client =>
-    client.ClientName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (statusFilter === '' || client.status?.toLowerCase() === statusFilter.toLowerCase())
+    (client.ClientName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) &&
+    (statusFilter === '' || (client.status || '').toLowerCase() === statusFilter.toLowerCase())
   );
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredClients.length / itemsPerPage));
   const paginatedClients = filteredClients.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -86,7 +104,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter]);
 
-  // Hide SharePoint UI elements
+  // Hide SharePoint chrome
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -142,7 +160,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
       }}
     >
       <div className={styles.dashboardWrapper}>
-        {/* Header Section */}
+        {/* Header */}
         <header className={styles.dashboardHeader}>
           <div className={styles.logoSection}>
             <img src={logo} alt="Logo" className={styles.logo} />
@@ -188,8 +206,9 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
           <table className={styles.clientTable}>
             <thead>
               <tr>
-                 <th>Client ID</th>
+                <th>Client ID</th>
                 <th>Client Name</th>
+                <th>Salesperson</th>
                 <th>Contact Person</th>
                 <th>Email</th>
                 <th>Agreement Date</th>
@@ -198,8 +217,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <th>Mobile</th>
                 <th>Location</th>
                 <th>Industry</th>
-                <th>Action</th> {/* New column */}
-
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -207,17 +225,40 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <tr key={client.Id}>
                   <td>{client.CLIENTId0}</td>
                   <td>{client.ClientName}</td>
+                  <td>{client.SalesPersonName || ''}</td>
                   <td>{client.ContactPersonforHiring}</td>
                   <td>{client.EmailAddress_x002d_Hiring}</td>
                   <td>{client.DateofAgreement ? new Date(client.DateofAgreement).toLocaleDateString() : ''}</td>
-                  <td>{client.GSTNumber}</td>
+                  <td>{client.GSTNumber ?? ''}</td>
                   <td>{client.status}</td>
                   <td>{client.Mobilenumber}</td>
                   <td>{client.ClientLocation_x003a_Name}</td>
                   <td>{client.ClientIndustry}</td>
-                  <td><button className={styles.editButton} onClick={() => navigate(`/clientform/${client.CLIENTId0 }`)}>Edit</button></td>                  
+                  <td>
+                    <button
+                      className={styles.editButton}
+                      onClick={() => navigate(`/clientform/${client.CLIENTId0}`)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className={styles.deleteButton}
+                      style={{ marginLeft: "8px", backgroundColor: "red", color: "white" }}
+                      onClick={() => handleDelete(client.Id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
+
+              {paginatedClients.length === 0 && (
+                <tr>
+                  <td colSpan={12} style={{ textAlign: 'center', padding: '1rem' }}>
+                    No clients found.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -225,7 +266,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
         {/* Pagination */}
         <div className={styles.pagination} style={{ marginTop: '1rem', textAlign: 'center' }}>
           <button
-            onClick={() => setCurrentPage(currentPage - 1)}
+            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
             style={{ marginRight: '1rem' }}
           >
@@ -235,7 +276,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
             Page {currentPage} of {totalPages}
           </span>
           <button
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
             style={{ marginLeft: '1rem' }}
           >
