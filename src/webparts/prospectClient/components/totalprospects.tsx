@@ -38,8 +38,7 @@ interface IProspect {
   NotesfromInteraction: string;
   CurrentStatus: string;
   ClientResponse: string;
-  NextSteps: string;
-  
+  NextSteps: string;  
 }
 
 const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
@@ -47,7 +46,7 @@ const TotalProspects: React.FC<ITotalProspectsProps> = ({ sp }) => {
   const [prospects, setProspects] = useState<IProspect[]>([]); // <-- Fix: add setter
   const [searchTerm, setSearchTerm] = useState('');
 
-    // Pagination
+// Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
   
@@ -81,7 +80,7 @@ const handleDelete = async (prospectID: string) => {
 };
 
 
-  useEffect(() => {
+useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch prospects from SharePoint list "Prospect List"
