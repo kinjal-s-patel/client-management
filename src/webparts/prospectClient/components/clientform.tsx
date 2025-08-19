@@ -215,7 +215,7 @@ await list.items.getById(itemId).update({
   Mobilenumber: formData.Mobilenumber ? Number(formData.Mobilenumber) : null,
   Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
   EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
+  MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
     ? Number(formData.MobileNumber_x002d_Billing_x002f)
     : null,
   CommercialsDecided: formData.CommercialsDecided,
@@ -302,7 +302,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
             <img src={logo} alt="Logo" className={styles.logo} />
             <div>
               <h1 className={styles.title}>Client Management</h1>
-              <p className={styles.subtitle}>Streamlined Client Onboarding</p>
+              <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
             </div>
           </div>
           <nav className={styles.navBar}>
