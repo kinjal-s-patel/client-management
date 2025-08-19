@@ -92,34 +92,42 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
           const items = await list.items.filter(`CLIENTId0 eq '${id}'`).top(1)();
           if (items.length > 0) {
             const client = items[0];
-            setFormData({
-              CLIENTId0: client.CLIENTId0 || "",
-              SalesPersonName: client.SalesPersonName || "",
-              DateofAgreement: client.DateofAgreement ? new Date(client.DateofAgreement).toISOString().split("T")[0] : "",
-              ClientName: client.ClientName || "",
-              ClientLocation: client.ClientLocation || "",
-              ClientLocation_x003a_Street: client.ClientLocation_x003a_Street || "",
-              ClientLocation_x003a_City: client.ClientLocation_x003a_City || "",
-              ClientLocation_x003a_State: client.ClientLocation_x003a_State || "",
-              ClientLocation_x003a_Country_x00: client.ClientLocation_x003a_Country_x00 || "",
-              ClientLocation_x003a_PostalCode: client.ClientLocation_x003a_PostalCode || "",
-              ClientLocation_x003a_Name: client.ClientLocation_x003a_Name || "",
-              ContactPersonforHiring: client.ContactPersonforHiring || "",
-              EmailAddress_x002d_Hiring: client.EmailAddress_x002d_Hiring || "",
-              Mobilenumber: client.Mobilenumber?.toString() || "",
-              Billing_x002f_Accounting: client.Billing_x002f_Accounting || "",
-              EmailAddress_x002d_Accounting_x0: client.EmailAddress_x002d_Accounting_x0 || "",
-              MobileNumber_x002d_Billing_x002f: client.MobileNumber_x002d_Billing_x002f || "",
-              CommercialsDecided: client.CommercialsDecided || "",
-              PaymentPeriod: client.PaymentPeriod || 0,
-              ReplacementPeriod: client.ReplacementPeriod || 0,
-              GSTNumber: client.GSTNumber || "",
-              ClientWebsite: client.ClientWebsite || "",
-              LinkedinProfile1: client.LinkedinProfile1 || "",
-              Linkedinprofile2: client.Linkedinprofile2 || "",
-              ClientIndustry: client.ClientIndustry || "",
-              status: client.status || ""
-            });
+setFormData({
+  CLIENTId0: client.CLIENTId0 !== undefined ? Number(client.CLIENTId0) : 0,  // Number
+  SalesPersonName: client.SalesPersonName || "",
+  DateofAgreement: client.DateofAgreement
+    ? new Date(client.DateofAgreement).toISOString().split("T")[0]
+    : "",
+  ClientName: client.ClientName || "",
+  ClientLocation: client.ClientLocation || "",
+  ClientLocation_x003a_Street: client.ClientLocation_x003a_Street || "",
+  ClientLocation_x003a_City: client.ClientLocation_x003a_City || "",
+  ClientLocation_x003a_State: client.ClientLocation_x003a_State || "",
+  ClientLocation_x003a_Country_x00: client.ClientLocation_x003a_Country_x00 || "",
+  ClientLocation_x003a_PostalCode: client.ClientLocation_x003a_PostalCode || "",
+  ClientLocation_x003a_Name: client.ClientLocation_x003a_Name || "",
+  ContactPersonforHiring: client.ContactPersonforHiring || "",
+  EmailAddress_x002d_Hiring: client.EmailAddress_x002d_Hiring || "",
+
+  // 👇 Numeric fields as numbers
+  Mobilenumber: client.Mobilenumber !== undefined ? Number(client.Mobilenumber) : 0,
+  Billing_x002f_Accounting: client.Billing_x002f_Accounting || "",
+  EmailAddress_x002d_Accounting_x0: client.EmailAddress_x002d_Accounting_x0 || "",
+  MobileNumber_x002d_Billing_x002f: client.MobileNumber_x002d_Billing_x002f !== undefined
+    ? Number(client.MobileNumber_x002d_Billing_x002f)
+    : 0,
+  CommercialsDecided: client.CommercialsDecided || "",
+  PaymentPeriod: client.PaymentPeriod !== undefined ? Number(client.PaymentPeriod) : 0,
+  ReplacementPeriod: client.ReplacementPeriod !== undefined ? Number(client.ReplacementPeriod) : 0,
+
+  GSTNumber: client.GSTNumber || "",
+  ClientWebsite: client.ClientWebsite || "",
+  LinkedinProfile1: client.LinkedinProfile1 || "",
+  Linkedinprofile2: client.Linkedinprofile2 || "",
+  ClientIndustry: client.ClientIndustry || "",
+  status: client.status || ""
+});
+
             setItemId(client.Id);
             setClientID(client.CLIENTId0);
           }
@@ -149,9 +157,11 @@ const ClientForm: React.FC<IClientFormProps> = ({ context }) => {
         // ADD NEW CLIENT
 
 const addResult = await list.items.add({
-  CLIENTId0: formData.CLIENTId0,
+CLIENTId0: formData.CLIENTId0 ? Number(formData.CLIENTId0) : null,
   SalesPersonName: formData.SalesPersonName,
-  DateofAgreement: formData.DateofAgreement ? new Date(formData.DateofAgreement) : null,
+  DateofAgreement: formData.DateofAgreement 
+    ? new Date(formData.DateofAgreement).toISOString() 
+    : null,
   ClientName: formData.ClientName,
   ClientLocation: formData.ClientLocation,
   ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
@@ -162,10 +172,12 @@ const addResult = await list.items.add({
   ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
   ContactPersonforHiring: formData.ContactPersonforHiring,
   EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
-  Mobilenumber: formData.Mobilenumber,
+  Mobilenumber: formData.Mobilenumber ? Number(formData.Mobilenumber) : null,
   Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
   EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-  MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
+  MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
+    ? Number(formData.MobileNumber_x002d_Billing_x002f)
+    : null,
   CommercialsDecided: formData.CommercialsDecided,
   PaymentPeriod: Number(formData.PaymentPeriod) || 0,
   ReplacementPeriod: Number(formData.ReplacementPeriod) || 0,
@@ -184,10 +196,12 @@ setItemId(newId);
 alert("✅ Client added successfully!");
       } else {
         // UPDATE CLIENT
-        await list.items.getById(itemId).update({
-  CLIENTId0: formData.CLIENTId0,
+await list.items.getById(itemId).update({
+  CLIENTId0: formData.CLIENTId0 ? Number(formData.CLIENTId0) : null,
   SalesPersonName: formData.SalesPersonName,
-  DateofAgreement: formData.DateofAgreement ? new Date(formData.DateofAgreement) : null,
+  DateofAgreement: formData.DateofAgreement 
+    ? new Date(formData.DateofAgreement).toISOString() 
+    : null,
   ClientName: formData.ClientName,
   ClientLocation: formData.ClientLocation,
   ClientLocation_x003a_Street: formData.ClientLocation_x003a_Street,
@@ -198,13 +212,15 @@ alert("✅ Client added successfully!");
   ClientLocation_x003a_Name: formData.ClientLocation_x003a_Name,
   ContactPersonforHiring: formData.ContactPersonforHiring,
   EmailAddress_x002d_Hiring: formData.EmailAddress_x002d_Hiring,
-  Mobilenumber: formData.Mobilenumber,
+  Mobilenumber: formData.Mobilenumber ? Number(formData.Mobilenumber) : null,
   Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
   EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-  MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f,
+MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
+    ? Number(formData.MobileNumber_x002d_Billing_x002f)
+    : null,
   CommercialsDecided: formData.CommercialsDecided,
-  PaymentPeriod: Number(formData.PaymentPeriod) || 0,
-  ReplacementPeriod: Number(formData.ReplacementPeriod) || 0,
+  PaymentPeriod: formData.PaymentPeriod ? Number(formData.PaymentPeriod) : null,
+  ReplacementPeriod: formData.ReplacementPeriod ? Number(formData.ReplacementPeriod) : null,
   GSTNumber: formData.GSTNumber,
   ClientWebsite: formData.ClientWebsite,
   LinkedinProfile1: formData.LinkedinProfile1,

@@ -209,7 +209,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
               <tr>
                 <th>Client ID</th>
                 <th>Client Name</th>
-                <th>Salesperson</th>
+                {/* <th>Salesperson</th> */}
                 <th>Contact Person</th>
                 <th>Email</th>
                 <th>Agreement Date</th>
@@ -227,7 +227,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <tr key={client.Id}>
                   <td>{client.CLIENTId0}</td>
                   <td>{client.ClientName}</td>
-                  <td>{client.SalesPersonName || ''}</td>
+                  {/* <td>{client.SalesPersonName || ''}</td> */}
                   <td>{client.ContactPersonforHiring}</td>
                   <td>{client.EmailAddress_x002d_Hiring}</td>
                   <td>{client.DateofAgreement ? new Date(client.DateofAgreement).toLocaleDateString() : ''}</td>
