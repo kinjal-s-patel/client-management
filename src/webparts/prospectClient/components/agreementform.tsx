@@ -67,6 +67,26 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
     if (id) fetchData();
   }, [id]);
 
+  useEffect(() => {
+    const fetchClient = async () => {
+      try {
+        if (id) {
+          const items = await sp.web.lists.getByTitle("client list")
+            .items.filter(`CLIENTId0 eq '${id}'`) // match your internal name
+            .top(1)();
+
+          if (items.length > 0) {
+            setClientData(items[0]); // save client record
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching client:", err);
+      }
+    };
+
+    fetchClient();
+  }, [id]);
+
   // ✅ Save Agreement (Add or Update)
   const saveAgreement = async () => {
     try {
@@ -183,9 +203,10 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
         </header>
 
         {/* Agreement Form */}
-   <div className={styles.clientFormWrapper}>
-  <h2>{itemId ? "Edit Agreement" : "Generate Agreement"}</h2>
-  <div className={styles.formGrid}>
+        <div className={styles.clientFormWrapper}>
+          <h2>Agreement Form</h2>
+<div className={styles.formGrid}>
+
 
     {/* Auto-populated client details */}
     <TextField label="Client ID" value={clientData.CLIENTId0 || ""} readOnly />

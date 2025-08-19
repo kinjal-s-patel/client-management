@@ -25,6 +25,7 @@ const AppRouter: React.FC<IAppRouterProps> = (props) => {
       <Route path="/" element={<Dashboard {...restProps} context={context} />} />
       <Route path="clientform" element={<ClientForm {...restProps} context={context} />} />
      <Route path="/clientform/:id?" element={<ClientForm context={context} />} />
+      <Route path="/agreementform/:id?" element={<GenerateAgreementForm context={context} />} />
       <Route path="totalclient" element={<TotalClients {...restProps} context={context} />} />
       <Route path="totalprospects" element={<TotalProspects {...restProps} context={context} />} />
       <Route path="prospectform" element={<ProspectFormPage {...props} />} />

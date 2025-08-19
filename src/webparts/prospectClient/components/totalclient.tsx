@@ -239,7 +239,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                    <td>
                     <button
                       className={styles.Button}
-                      onClick={() => navigate(`/clientform/${client.CLIENTId0}`)}
+                      onClick={() => navigate(`/agreementform/${client.CLIENTId0}`)}
                     >
                       Generate Agreement
                     </button>
