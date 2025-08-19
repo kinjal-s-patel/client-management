@@ -142,6 +142,92 @@ background: linear-gradient(to right, #004e92, #000428);
   background: #266e2c;
 }
 
+
+//preview action//
+/* Full page container */
+.previewPage {
+  width: 100%;
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 3rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  font-family: "Segoe UI", sans-serif;
+  color: #333;
+}
+
+/* Document header */
+.previewDocument h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #004578;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #004578;
+  padding-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* Section box */
+.previewSection {
+  margin-bottom: 2rem;
+  padding: 1.2rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.previewSection h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #004578;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.4rem;
+}
+
+/* Rows like invoice fields */
+.previewRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.previewRow:last-child {
+  border-bottom: none;
+}
+
+/* Labels */
+.previewLabel {
+  flex: 0 0 200px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Values */
+.previewValue {
+  flex: 1;
+  text-align: right;
+  color: #222;
+}
+
+/* Print optimization */
+@media print {
+  body {
+    margin: 0;
+    background: #fff;
+  }
+  .previewPage {
+    border: none;
+    box-shadow: none;
+    max-width: 100%;
+    padding: 1rem;
+  }
+}
+
+
 /* ====== Footer ====== */
 .footer {
   background-color: #002d62;

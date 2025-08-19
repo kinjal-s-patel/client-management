@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import styles from './agreementform.module.scss';
-import { TextField, DatePicker } from '@fluentui/react';
+import { PrimaryButton, DefaultButton, TextField, DatePicker,Dialog , DialogFooter, DialogType} from '@fluentui/react';
 import { spfi, SPFx } from "@pnp/sp";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -14,9 +14,11 @@ interface IGenerateAgreementFormProps {
 const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context }) => {
   const navigate = useNavigate();
   const sp = spfi().using(SPFx(context));
-  const { id } = useParams(); // agreement or client id from route
+  const { id } = useParams(); // client id (if navigating from total clients)
 
+  const [showPreview, setShowPreview] = useState(false);
   const [itemId, setItemId] = useState<number | null>(null);
+  const [agreementId, setAgreementId] = useState<string>("");
   const [clientData, setClientData] = useState<any>({});
   const [formData, setFormData] = useState<any>({
     AgreementDate: '',
@@ -32,77 +34,72 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
     }));
   };
 
+  // ✅ Generate Next Agreement ID (JMS-XXX)
+  const generateNextAgreementId = async () => {
+    const list = sp.web.lists.getByTitle("Agreements");
+    const items = await list.items.orderBy("Id", false).top(1)();
+    if (items.length > 0 && items[0].AgreementID) {
+      const lastId = items[0].AgreementID;
+      const num = parseInt(lastId.split("-")[1]) + 1;
+      return `JMS-${num.toString().padStart(3, "0")}`;
+    }
+    return "JMS-001";
+  };
+
   // ✅ Fetch client & agreement details
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Load client details
-        const clientList = sp.web.lists.getByTitle("client list");
-        const clientItems = await clientList.items.filter(`CLIENTId0 eq '${id}'`).top(1)();
-
-        if (clientItems.length > 0) {
-          setClientData(clientItems[0]);
+        if (id) {
+          const clientList = sp.web.lists.getByTitle("client list");
+          const clientItems = await clientList.items.filter(`CLIENTId0 eq '${id}'`).top(1)();
+          if (clientItems.length > 0) {
+            setClientData(clientItems[0]);
+          }
         }
 
-        // Load agreement if already exists (edit mode)
-        const agreementList = sp.web.lists.getByTitle("agreements");
-        const agreements = await agreementList.items.filter(`ClientID eq '${id}'`).top(1)();
-
-        if (agreements.length > 0) {
-          const ag = agreements[0];
-          setFormData({
-            AgreementDate: ag.AgreementDate
-              ? new Date(ag.AgreementDate).toISOString().split("T")[0]
-              : '',
-            AdditionalRequirements: ag.AdditionalRequirements || '',
-            SpecialTerms: ag.SpecialTerms || ''
-          });
-          setItemId(ag.Id); // set SP internal Id for update
+        if (id) {
+          const agreementList = sp.web.lists.getByTitle("Agreements");
+          const agreements = await agreementList.items.filter(`ClientID eq '${id}'`).top(1)();
+          if (agreements.length > 0) {
+            const ag = agreements[0];
+            setFormData({
+              AgreementDate: ag.AgreementDate ? new Date(ag.AgreementDate).toISOString().split("T")[0] : '',
+              AdditionalRequirements: ag.AdditionalRequirements || '',
+              SpecialTerms: ag.SpecialTerms || ''
+            });
+            setAgreementId(ag.AgreementID);
+            setItemId(ag.Id);
+            return;
+          }
         }
+
+        const newId = await generateNextAgreementId();
+        setAgreementId(newId);
+
       } catch (err) {
         console.error("Error fetching data:", err);
       }
     };
 
-    if (id) fetchData();
+    fetchData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchClient = async () => {
-      try {
-        if (id) {
-          const items = await sp.web.lists.getByTitle("client list")
-            .items.filter(`CLIENTId0 eq '${id}'`) // match your internal name
-            .top(1)();
-
-          if (items.length > 0) {
-            setClientData(items[0]); // save client record
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching client:", err);
-      }
-    };
-
-    fetchClient();
-  }, [id]);
-
-  // ✅ Save Agreement (Add or Update)
+  // ✅ Save Agreement
   const saveAgreement = async () => {
     try {
-      const list = sp.web.lists.getByTitle("agreements");
+      const list = sp.web.lists.getByTitle("Agreements");
 
       if (!itemId) {
-        // ADD NEW AGREEMENT
+
         const addResult = await list.items.add({
-          Title: `Agreement for ${clientData.ClientName}`,
-          ClientID: clientData.CLIENTId0,
-          ClientName: clientData.ClientName,
-          SalesPerson: clientData.SalesPersonName,
-          ClientLocation: clientData.ClientLocation,
-          AgreementDate: formData.AgreementDate
-            ? new Date(formData.AgreementDate).toISOString()
-            : null,
+          Title: `Agreement ${agreementId}`,
+          AgreementID: agreementId,
+          ClientID: clientData.CLIENTId0 || "",
+          ClientName: clientData.ClientName || "",
+          SalesPerson: clientData.SalesPersonName || "",
+          ClientLocation: clientData.ClientLocation || "",
+          AgreementDate: formData.AgreementDate ? new Date(formData.AgreementDate).toISOString() : null,
           AdditionalRequirements: formData.AdditionalRequirements,
           SpecialTerms: formData.SpecialTerms
         });
@@ -110,11 +107,9 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
         setItemId(addResult?.data?.Id || addResult?.item?.Id);
         alert("✅ Agreement generated successfully!");
       } else {
-        // UPDATE AGREEMENT
+        
         await list.items.getById(itemId).update({
-          AgreementDate: formData.AgreementDate
-            ? new Date(formData.AgreementDate).toISOString()
-            : null,
+          AgreementDate: formData.AgreementDate ? new Date(formData.AgreementDate).toISOString() : null,
           AdditionalRequirements: formData.AdditionalRequirements,
           SpecialTerms: formData.SpecialTerms
         });
@@ -129,7 +124,7 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
     }
   };
 
-  // ✅ Hide SharePoint UI
+  // ✅ Inject Full Page Styles
   useEffect(() => {
     const style = document.createElement("style");
     style.innerHTML = `
@@ -183,8 +178,9 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
         left: 0,
         zIndex: 9999
       }}
-    >
+    > 
       <div className={styles.dashboardWrapper}>
+        
         {/* Header Section */}
         <header className={styles.dashboardHeader}>
           <div className={styles.logoSection}>
@@ -196,66 +192,100 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>
         </header>
 
-        {/* Agreement Form */}
-        <div className={styles.clientFormWrapper}>
-          <h2>Agreement Form</h2>
-<div className={styles.formGrid}>
+        {/* Agreement Form OR Preview */}
 
+          <div className={styles.clientFormWrapper}>
+            <h2>Agreement Form</h2>
+            <div className={styles.formGrid}>
+              <TextField label="Client ID" value={clientData.CLIENTId0 || ""} readOnly />
+              <TextField label="Client Name" value={clientData.ClientName || ""} readOnly />
+              <TextField label="Sales Person" value={clientData.SalesPersonName || ""} readOnly />
+              <TextField label="Client Location" value={clientData.ClientLocation || ""} readOnly />
 
-    {/* Auto-populated client details */}
-    <TextField label="Client ID" value={clientData.CLIENTId0 || ""} readOnly />
-    <TextField label="Client Name" value={clientData.ClientName || ""} readOnly />
-    <TextField label="Sales Person" value={clientData.SalesPersonName || ""} readOnly />
-    <TextField label="Client Location" value={clientData.ClientLocation || ""} readOnly />
+              <DatePicker
+                label="Agreement Date"
+                placeholder="Select agreement date"
+                onSelectDate={(date) =>
+                  handleChange('AgreementDate', date ? date.toISOString().split("T")[0] : "")
+                }
+                value={formData.AgreementDate ? new Date(formData.AgreementDate) : undefined}
+              />
 
-    {/* Agreement-specific fields */}
-    <DatePicker
-      label="Agreement Date"
-      placeholder="Select agreement date"
-      onSelectDate={(date) =>
-        handleChange('AgreementDate', date ? date.toISOString().split("T")[0] : "")
-      }
-      value={formData.AgreementDate ? new Date(formData.AgreementDate) : undefined}
-    />
+              <TextField
+                label="Additional Requirements"
+                multiline
+                rows={3}
+                value={formData.AdditionalRequirements}
+                onChange={(_, val) => handleChange('AdditionalRequirements', val || "")}
+              />
 
-    <TextField
-      label="Additional Requirements"
-      multiline
-      rows={3}
-      value={formData.AdditionalRequirements}
-      onChange={(_, val) => handleChange('AdditionalRequirements', val || "")}
-    />
+              <TextField
+                label="Special Terms"
+                multiline
+                rows={3}
+                value={formData.SpecialTerms}
+                onChange={(_, val) => handleChange('SpecialTerms', val || "")}
+              />
+            </div>
 
-    <TextField
-      label="Special Terms"
-      multiline
-      rows={3}
-      value={formData.SpecialTerms}
-      onChange={(_, val) => handleChange('SpecialTerms', val || "")}
-    />
+            {/* Actions */}
+            <div className={styles.submitSection}>
+              <PrimaryButton text="Preview Agreement" onClick={() => setShowPreview(true)} />
+            </div>
+          </div>
+
+{/* Preview Dialog */}
+<Dialog
+  hidden={!showPreview}
+  onDismiss={() => setShowPreview(false)}
+  dialogContentProps={{
+    type: DialogType.largeHeader,
+    title: "Agreement Preview",
+  }}
+  minWidth={800}
+  maxWidth={1000}
+>
+  <div className={styles.previewDocument}>
+    {/* Client Details */}
+    <div className={styles.previewSection}>
+      <h3>Client Details</h3>
+      <div className={styles.previewRow}><b>Client ID:</b> {clientData.CLIENTId0}</div>
+      <div className={styles.previewRow}><b>Client Name:</b> {clientData.ClientName}</div>
+      <div className={styles.previewRow}><b>Sales Person:</b> {clientData.SalesPersonName}</div>
+      <div className={styles.previewRow}><b>Client Location:</b> {clientData.ClientLocation}</div>
+    </div>
+
+    {/* Agreement Details */}
+    <div className={styles.previewSection}>
+      <h3>Agreement Details</h3>
+      <div className={styles.previewRow}><b>Agreement ID:</b> {agreementId}</div>
+      <div className={styles.previewRow}><b>Agreement Date:</b> {formData.AgreementDate}</div>
+      <div className={styles.previewRow}><b>Additional Requirements:</b> {formData.AdditionalRequirements}</div>
+      <div className={styles.previewRow}><b>Special Terms:</b> {formData.SpecialTerms}</div>
+    </div>
   </div>
 
-  {/* Submit */}
-  <div className={styles.submitSection}>
-    <button onClick={saveAgreement}>
-      {itemId ? "Update Agreement" : "Generate Agreement"}
-    </button>
-  </div>
-</div>
+  {/* Actions */}
+  <DialogFooter>
+    <DefaultButton text="Back to Edit" onClick={() => setShowPreview(false)} />
+    <PrimaryButton text={itemId ? "Update & Save" : "Save Agreement"} onClick={saveAgreement} />
+  </DialogFooter>
+</Dialog>
 
 
         {/* Footer */}
-        <footer className={styles.footer}>© 2025 Agreement Management. All rights reserved.</footer>
+        <footer className={styles.footer}>
+          © 2025 Client Management. All rights reserved.
+        </footer>
       </div>
     </div>
   );
 };
 
 export default GenerateAgreementForm;
- 
