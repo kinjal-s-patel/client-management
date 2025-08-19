@@ -95,10 +95,10 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
         const addResult = await list.items.add({
           Title: `Agreement ${agreementId}`,
           AgreementID: agreementId,
-          ClientID: clientData.CLIENTId0 || "",
-          ClientName: clientData.ClientName || "",
-          SalesPerson: clientData.SalesPersonName || "",
-          ClientLocation: clientData.ClientLocation || "",
+          clientid: clientData.CLIENTId0 || "",
+          clientname: clientData.ClientName || "",
+          salesperson: clientData.SalesPersonName || "",
+          clientlocation: clientData.ClientLocation || "",
           AgreementDate: formData.AgreementDate ? new Date(formData.AgreementDate).toISOString() : null,
           AdditionalRequirements: formData.AdditionalRequirements,
           SpecialTerms: formData.SpecialTerms
@@ -107,7 +107,7 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
         setItemId(addResult?.data?.Id || addResult?.item?.Id);
         alert("✅ Agreement generated successfully!");
       } else {
-        
+
         await list.items.getById(itemId).update({
           AgreementDate: formData.AgreementDate ? new Date(formData.AgreementDate).toISOString() : null,
           AdditionalRequirements: formData.AdditionalRequirements,
@@ -203,10 +203,36 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
           <div className={styles.clientFormWrapper}>
             <h2>Agreement Form</h2>
             <div className={styles.formGrid}>
-              <TextField label="Client ID" value={clientData.CLIENTId0 || ""} readOnly />
-              <TextField label="Client Name" value={clientData.ClientName || ""} readOnly />
-              <TextField label="Sales Person" value={clientData.SalesPersonName || ""} readOnly />
-              <TextField label="Client Location" value={clientData.ClientLocation || ""} readOnly />
+                  <TextField label="AgreementID" value={agreementId} readOnly />
+
+<TextField
+  label="Client ID"
+  value={clientData.CLIENTId0 || ""}
+  readOnly={!!id}   // ✅ only readonly if opened from Total Clients
+  onChange={(_, val) => !id && setClientData((prev: any) => ({ ...prev, CLIENTId0: val || "" }))}
+/>
+
+<TextField
+  label="Client Name"
+  value={clientData.ClientName || ""}
+  readOnly={!!id}
+  onChange={(_, val) => !id && setClientData((prev: any) => ({ ...prev, ClientName: val || "" }))}
+/>
+
+<TextField
+  label="Sales Person"
+  value={clientData.SalesPersonName || ""}
+  readOnly={!!id}
+  onChange={(_, val) => !id && setClientData((prev: any) => ({ ...prev, SalesPersonName: val || "" }))}
+/>
+
+<TextField
+  label="Client Location"
+  value={clientData.ClientLocation || ""}
+  readOnly={!!id}
+  onChange={(_, val) => !id && setClientData((prev: any) => ({ ...prev, ClientLocation: val || "" }))}
+/>
+
 
               <DatePicker
                 label="Agreement Date"
