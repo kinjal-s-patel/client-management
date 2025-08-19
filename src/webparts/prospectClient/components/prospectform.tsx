@@ -392,7 +392,7 @@ try {
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement</button>
+            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>

@@ -121,7 +121,7 @@ useEffect(() => {
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
             <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement</button>
+            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
           </nav>
         </header>

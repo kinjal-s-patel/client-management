@@ -6,6 +6,7 @@ import ClientForm from './clientform';
 import TotalClients from './totalclient';
 import ProspectFormPage from './prospectform';
 import TotalProspects from './totalprospects';
+import GenerateAgreementForm from './agreementform';
 
 import { IProspectClientProps } from './IProspectClientProps';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
@@ -28,6 +29,7 @@ const AppRouter: React.FC<IAppRouterProps> = (props) => {
       <Route path="totalprospects" element={<TotalProspects {...restProps} context={context} />} />
       <Route path="prospectform" element={<ProspectFormPage {...props} />} />
       <Route path="/prospectform/edit/:prospectId" element={<ProspectFormPage context={context} />} />
+       <Route path="agreementform" element={<GenerateAgreementForm {...props} />} />
 
     </Routes>
   );

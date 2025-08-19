@@ -215,7 +215,7 @@ await list.items.getById(itemId).update({
   Mobilenumber: formData.Mobilenumber ? Number(formData.Mobilenumber) : null,
   Billing_x002f_Accounting: formData.Billing_x002f_Accounting,
   EmailAddress_x002d_Accounting_x0: formData.EmailAddress_x002d_Accounting_x0,
-  MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
+MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
     ? Number(formData.MobileNumber_x002d_Billing_x002f)
     : null,
   CommercialsDecided: formData.CommercialsDecided,
@@ -302,12 +302,12 @@ await list.items.getById(itemId).update({
             <img src={logo} alt="Logo" className={styles.logo} />
             <div>
               <h1 className={styles.title}>Client Management</h1>
-              <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
+              <p className={styles.subtitle}>Streamlined Client Onboarding</p>
             </div>
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/generateagreement')}>Generate Agreement</button>
+            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
             <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>
