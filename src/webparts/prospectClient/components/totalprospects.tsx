@@ -101,7 +101,8 @@ useEffect(() => {
 
   const filteredProspects = prospects.filter(p =>
     p.CompanyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.ContactPersonName?.toLowerCase().includes(searchTerm.toLowerCase())
+    p.ContactPersonName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.ClientResponse?.toLocaleLowerCase().includes(searchTerm.toLocaleLowerCase())
   );
 
    // Pagination calculations
@@ -186,7 +187,7 @@ useEffect(() => {
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Search by company"
+            placeholder="Search by company or Client Response"
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
           />

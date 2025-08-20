@@ -6,6 +6,10 @@ import { spfi, SPFx } from "@pnp/sp";
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { useNavigate, useParams } from 'react-router-dom';
 import logo from '../assets/LOGO.png';
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import AgreementDocument from "./agreementstructure";
+
+
 
 interface IGenerateAgreementFormProps {
   context: WebPartContext;
@@ -123,7 +127,7 @@ console.log(fields.map(f => ({ Title: f.Title, InternalName: f.InternalName })))
           AdditionalRequirements: formData.AdditionalRequirements,
           SpecialTerms: formData.SpecialTerms
         });
-        
+
         alert("✅ Agreement updated successfully!");
       }
 
@@ -308,10 +312,32 @@ console.log(fields.map(f => ({ Title: f.Title, InternalName: f.InternalName })))
   </div>
 
   {/* Actions */}
-  <DialogFooter>
-    <DefaultButton text="Back to Edit" onClick={() => setShowPreview(false)} />
-    <PrimaryButton text={itemId ? "Update & Save" : "Save Agreement"} onClick={saveAgreement} />
-  </DialogFooter>
+<DialogFooter>
+  <DefaultButton text="Back to Edit" onClick={() => setShowPreview(false)} />
+  <PrimaryButton text={itemId ? "Update & Save" : "Save Agreement"} onClick={saveAgreement} />
+</DialogFooter>
+
+{/* ✅ New Download PDF button */}
+
+<PDFDownloadLink
+  document={
+    <AgreementDocument
+      clientData={clientData}
+      formData={formData}
+      agreementId={agreementId}
+    />
+  }
+  fileName={`Agreement_${agreementId}.pdf`}
+>
+  {({ loading }) =>
+    loading ? (
+      <span>Generating PDF...</span>
+    ) : (
+      <PrimaryButton text="Download PDF" />
+    )
+  }
+</PDFDownloadLink>
+
 </Dialog>
 
 
