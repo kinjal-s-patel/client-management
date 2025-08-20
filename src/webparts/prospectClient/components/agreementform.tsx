@@ -47,43 +47,53 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
   };
 
   // ✅ Fetch client & agreement details
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (id) {
-          const clientList = sp.web.lists.getByTitle("client list");
-          const clientItems = await clientList.items.filter(`CLIENTId0 eq '${id}'`).top(1)();
-          if (clientItems.length > 0) {
-            setClientData(clientItems[0]);
-          }
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      if (id) {
+        // fetch client
+        const clientList = sp.web.lists.getByTitle("client list");
+        const clientItems = await clientList.items.filter(`CLIENTId0 eq '${id}'`).top(1)();
+        if (clientItems.length > 0) {
+          setClientData(clientItems[0]);
         }
 
-        if (id) {
-          const agreementList = sp.web.lists.getByTitle("Agreements");
-          const agreements = await agreementList.items.filter(`ClientID eq '${id}'`).top(1)();
-          if (agreements.length > 0) {
-            const ag = agreements[0];
-            setFormData({
-              AgreementDate: ag.AgreementDate ? new Date(ag.AgreementDate).toISOString().split("T")[0] : '',
-              AdditionalRequirements: ag.AdditionalRequirements || '',
-              SpecialTerms: ag.SpecialTerms || ''
-            });
-            setAgreementId(ag.AgreementID);
-            setItemId(ag.Id);
-            return;
-          }
-        }
+        // check if agreement exists
+        const agreementList = sp.web.lists.getByTitle("Agreements");
+        const agreements = await agreementList.items.filter(`clientid eq '${id}'`).top(1)();
+        const fields = await sp.web.lists.getByTitle("Agreements").fields();
+console.log(fields.map(f => ({ Title: f.Title, InternalName: f.InternalName })));
 
+
+        if (agreements.length > 0) {
+          // ✅ existing agreement → load it
+          const ag = agreements[0];
+          setFormData({
+            AgreementDate: ag.AgreementDate ? new Date(ag.AgreementDate).toISOString().split("T")[0] : '',
+            AdditionalRequirements: ag.AdditionalRequirements || '',
+            SpecialTerms: ag.SpecialTerms || ''
+          });
+          setAgreementId(ag.AgreementID);
+          setItemId(ag.Id);
+          return;
+        } else {
+          // ⬇️ no agreement for this client → generate new ID
+          const newId = await generateNextAgreementId();
+          setAgreementId(newId);
+        }
+      } else {
+        // ⬇️ brand new agreement form (no client id passed)
         const newId = await generateNextAgreementId();
         setAgreementId(newId);
-
-      } catch (err) {
-        console.error("Error fetching data:", err);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
 
-    fetchData();
-  }, [id]);
+  fetchData();
+}, [id]);
+
 
   // ✅ Save Agreement
   const saveAgreement = async () => {
@@ -113,7 +123,7 @@ const GenerateAgreementForm: React.FC<IGenerateAgreementFormProps> = ({ context 
           AdditionalRequirements: formData.AdditionalRequirements,
           SpecialTerms: formData.SpecialTerms
         });
-
+        
         alert("✅ Agreement updated successfully!");
       }
 
