@@ -207,10 +207,10 @@ useEffect(() => {
                 <th>Location</th>
                 <th>Date of First Contact</th>
                 <th>Follow-up 1</th>
-                <th>Follow-up 2</th>
-                <th>Follow-up 3</th>
+                {/* <th>Follow-up 2</th>
+                <th>Follow-up 3</th> */}
                 <th>Client Response</th>
-                <th>Next Steps</th>
+                <th>Current Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -226,10 +226,10 @@ useEffect(() => {
                   <td>{p.Location}</td>
                   <td>{p.DateofFirstContact ? new Date(p.DateofFirstContact).toLocaleDateString() : ''}</td>
                   <td>{p.FollowUpDate1 ? new Date(p.FollowUpDate1).toLocaleDateString() : ''}</td>
-                  <td>{p.FollowUpDate2 ? new Date(p.FollowUpDate2).toLocaleDateString() : ''}</td>
-                  <td>{p.FollowUpDate3 ? new Date(p.FollowUpDate3).toLocaleDateString() : ''}</td>
+                  {/* <td>{p.FollowUpDate2 ? new Date(p.FollowUpDate2).toLocaleDateString() : ''}</td>
+                  <td>{p.FollowUpDate3 ? new Date(p.FollowUpDate3).toLocaleDateString() : ''}</td> */}
                   <td>{p.ClientResponse}</td>
-                  <td>{p.NextSteps}</td>
+                  <td>{p.CurrentStatus}</td>
                   <td>
                     <button className={styles.editButton} onClick={() => navigate(`/prospectform/edit/${p.ProspectID}`)}>Edit</button>
                     <button className={styles.deleteButton} style={{ marginLeft: "8px", backgroundColor: "red", color: "white" }} onClick={() => handleDelete(p.ProspectID)}> Delete  </button>
