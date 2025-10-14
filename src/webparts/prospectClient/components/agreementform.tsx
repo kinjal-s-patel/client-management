@@ -118,6 +118,7 @@ console.log(fields.map(f => ({ Title: f.Title, InternalName: f.InternalName })))
           SpecialTerms: formData.SpecialTerms
         });
 
+
         setItemId(addResult?.data?.Id || addResult?.item?.Id);
         alert("✅ Agreement generated successfully!");
       } else {
@@ -207,7 +208,7 @@ console.log(fields.map(f => ({ Title: f.Title, InternalName: f.InternalName })))
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
             <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
-            <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button>
+            {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>
         </header>
