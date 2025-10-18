@@ -175,7 +175,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
             <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
+            {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>
@@ -218,7 +218,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                 <th>Mobile</th>
                 <th>Location</th>
                 <th>Industry</th>
-                <th>Agreement</th>
+                {/* <th>Agreement</th> */}
                  <th>Action</th>
               </tr>
             </thead>
@@ -236,7 +236,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                   <td>{client.Mobilenumber}</td>
                   <td>{client.ClientLocation_x003a_Name}</td>
                   <td>{client.ClientIndustry}</td>
-                   <td>
+                   {/* <td>
                     <button
                       className={styles.Button}
                       onClick={() => navigate(`/agreementform/${client.CLIENTId0}`)}
@@ -244,7 +244,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
                       Generate Agreement
                     </button>
                   
-                  </td>
+                  </td> */}
                   <td>
                     <button
                       className={styles.editButton}

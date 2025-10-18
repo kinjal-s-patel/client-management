@@ -307,7 +307,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
+            {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
           </nav>

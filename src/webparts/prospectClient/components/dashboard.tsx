@@ -18,7 +18,7 @@ const Dashboard: React.FC<IDashboardProps> = ({ context }) => {
   const navigate = useNavigate();
   const [totalProspects, setTotalProspects] = useState<number>(0);
   const [convertedClients, setConvertedClients] = useState<number>(0);
-  const [agreementsGenerated, setAgreementsGenerated] = useState<number>(0);
+  const [, setAgreementsGenerated] = useState<number>(0);
   // const [pendingApprovals, setPendingApprovals] = useState<number>(0);
 
   // Hide SharePoint chrome
@@ -121,7 +121,7 @@ useEffect(() => {
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
             <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button>
+            {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
           </nav>
         </header>
@@ -136,10 +136,10 @@ useEffect(() => {
             <h3>Converted Clients</h3>
             <p>{convertedClients}</p>
           </button>
-          <button className={styles.card} onClick={() => navigate('/agreements')}>
+          {/* <button className={styles.card} onClick={() => navigate('/agreements')}>
             <h3>Agreements Generated</h3>
             <p>{agreementsGenerated}</p>
-          </button>
+          </button> */}
           {/* <button className={styles.card} onClick={() => navigate('/pending-approvals')}>
             <h3>Pending Approvals</h3> */}
             {/* <p>{pendingApprovals}</p> */}
