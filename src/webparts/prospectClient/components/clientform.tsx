@@ -301,7 +301,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
           <div className={styles.logoSection}>
             <img src={logo} alt="Logo" className={styles.logo} />
             <div>
-              <h1 className={styles.title}>Client Management</h1>
+              <h1 className={styles.title}>Customer and Prospect Management System</h1>
               <p className={styles.subtitle}>Streamlined Prospect and Client Management</p>
             </div>
           </div>

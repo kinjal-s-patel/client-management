@@ -1,40 +1,47 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "prospect-client-management-client-side-solution",
+    "name": "Customer and Prospect Management System",
     "id": "9358716d-a154-4068-9b3e-d26e8fb044a8",
     "version": "1.0.0.3",
     "includeClientSideAssets": true,
-    "skipFeatureDeployment": true,
+    "skipFeatureDeployment": false,
     "isDomainIsolated": false,
+
     "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
-      "mpnId": "Undefined-1.20.0"
+      "name": "JMS Advisory Services Pvt. Ltd.",
+      "websiteUrl": "https://jmstech.co",
+      "privacyUrl": "https://jmstech.co/privacy-policy/",
+      "termsOfUseUrl": "https://jmstech.co/wp-content/uploads/2025/10/terms-condition-CPMS.pdf",
+      "mpnId": "6842280"
     },
+
     "metadata": {
       "shortDescription": {
-        "default": "prospect-client-management description"
+        "default": "Customer and Prospect Management System"
       },
       "longDescription": {
-        "default": "prospect-client-management description"
+        "default": "Customer and Prospect Management System is a SharePoint Framework (SPFx)-based business productivity solution designed to streamline client and prospect management within Microsoft 365. It enables teams to track customer interactions, manage prospect data, generate reports, and automate communication workflows directly within SharePoint. The system now includes automatic client conversion — when a prospect’s status is updated to 'Yes - Proceed to Agreement,' the record is automatically migrated to the client list, ensuring a seamless transition from prospect to client. Edit/Publish buttons are intentionally hidden as per SPFx guidelines"
       },
       "screenshotPaths": [],
       "videoUrl": "",
-      "categories": []
+      "categories": [
+        "Productivity",
+        "CRM"
+      ]
     },
+
     "features": [
       {
-        "title": "prospect-client-management Feature",
-        "description": "The feature that activates elements of the prospect-client-management solution.",
+        "title": "Prospect-Client Management Feature",
+        "description": "Activates the Customer and Prospect Management components, including prospect tracking, client conversion, reporting dashboards, and automated migration from prospect to client when prospect status is set to 'Yes - Proceed to Agreement'.",
         "id": "84dddb49-e9a3-4316-a401-3f7de3351b2f",
         "version": "1.0.0.0"
       }
     ]
   },
+
   "paths": {
-"zippedPackage": "solution/customer-prospect-management.sppkg"
+    "zippedPackage": "solution/Customer and Prospect Management System.sppkg"
   }
 }

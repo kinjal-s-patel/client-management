@@ -3,23 +3,25 @@
   "id": "41678510-823f-4368-8edc-b2337ed260bb",
   "alias": "ProspectClientWebPart",
   "componentType": "WebPart",
-
-  "version": "1.0.0.3",
+  "version": "1.0.0",
   "manifestVersion": 2,
-
 
   "requiresCustomScript": false,
   "supportedHosts": ["SharePointWebPart", "SharePointFullPage"],
   "supportsThemeVariants": true,
 
-  "preconfiguredEntries": [{
-    "groupId": "5c03119e-3074-46fd-976b-c60198311f70", 
-    "group": { "default": "Advanced" },
-    "title": { "default": "prospect-client " },
-    "description": { "default": "prospect-client  description" },
-    "officeFabricIconFontName": "Page",
-    "properties": {
-      "description": "prospect-client "
+  "preconfiguredEntries": [
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70",
+      "group": { "default": "Advanced" },
+      "title": { "default": "Customer and Prospect Management System" },
+      "description": {
+        "default": "Customer and Prospect Management System (CPMS) ..."
+      },
+      "iconImageUrl": "./assets/LOGO.png",
+      "properties": {
+        "description": "Customer and Prospect Management System"
+      }
     }
-  }]
+  ]
 }
