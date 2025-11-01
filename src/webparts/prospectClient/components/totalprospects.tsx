@@ -174,7 +174,7 @@ useEffect(() => {
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Customer Form</button>
              {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement </button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
              <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
@@ -269,7 +269,7 @@ useEffect(() => {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        © 2025 Prospect Management. All rights reserved.
+        © 2025 customer and prospect management system. All rights reserved.
       </footer>
     </div>
   );

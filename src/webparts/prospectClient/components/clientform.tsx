@@ -193,7 +193,7 @@ CLIENTId0: formData.CLIENTId0 ? Number(formData.CLIENTId0) : null,
 const newId = addResult?.data?.Id || addResult?.item?.Id;
 setItemId(newId);
 
-alert("✅ Client added successfully!");
+alert("✅ Customer added successfully!");
       } else {
         // UPDATE CLIENT
 await list.items.getById(itemId).update({
@@ -229,7 +229,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
   status: formData.status
 });
 
-        alert("✅ Client updated successfully!");
+        alert("✅ Customer updated successfully!");
       }
 
       navigate("/totalclient");
@@ -315,7 +315,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
 
         {/* Client Form */}
         <div className={styles.clientFormWrapper}>
-          <h2>Client Onboarding Form</h2>
+          <h2>Customer Onboarding Form</h2>
 <div className={styles.formGrid}>
   <TextField label="Client ID" value={CLIENTId0} readOnly />
 
@@ -521,7 +521,7 @@ MobileNumber_x002d_Billing_x002f: formData.MobileNumber_x002d_Billing_x002f
         </div>
 
         {/* Footer */}
-        <footer className={styles.footer}>© 2025 Client Management. All rights reserved.</footer>
+        <footer className={styles.footer}>© 2025 customer and prospect management system. All rights reserved.</footer>
       </div>
     </div>
   );

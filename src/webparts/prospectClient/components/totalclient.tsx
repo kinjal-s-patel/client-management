@@ -174,7 +174,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Customer Form</button>
             {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
@@ -303,7 +303,7 @@ const TotalClients: React.FC<ITotalClientsProps> = ({ sp }) => {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        © 2025 Client Management. All rights reserved.
+        © 2025 customer and prospect management system. All rights reserved.
       </footer>
     </div>
   );

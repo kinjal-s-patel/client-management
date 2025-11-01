@@ -120,11 +120,46 @@ useEffect(() => {
           </div>
           <nav className={styles.navBar}>
             <button className={styles.navButton} onClick={() => navigate('/prospectform')}>Prospect Form</button>
-            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Customer Form</button>
             {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
           </nav>
         </header>
+
+           {/* Onboarding Message for New Users */}
+<section
+  style={{
+    background: '#e8f1fb',
+    color: '#032c4d',
+    textAlign: 'center',
+    padding: '10px 0',
+    fontSize: '0.95rem',
+    borderTop: '1px solid #cfe0f5',
+    borderBottom: '1px solid #cfe0f5',
+    marginTop: '15px'
+  }}
+>
+  <h2 style={{ color: '#032c4d', fontSize: '1.3rem', marginBottom: '8px' }}>
+    Welcome to the Customer and Prospect Management System
+  </h2>
+  <p style={{ color: '#333', fontSize: '1rem', marginBottom: '12px' }}>
+    To access and manage customer or prospect data, please ensure your Microsoft 365 account has SharePoint permissions.
+  </p>
+  <div>
+    <a
+      href="https://jmstech.co/contact/"
+      style={{ color: '#0078d4', textDecoration: 'underline', marginRight: '20px' }}
+    >
+      Contact Us
+    </a>
+    <a
+      href="mailto:kinjal@jmsadvisory.in?subject=Request%20Access%20to%Customer-Prospect%20Management%20System"
+      style={{ color: '#0078d4', textDecoration: 'underline' }}
+    >
+      Request Access
+    </a>
+  </div>
+</section>
 
         {/* Cards */}
         <section className={styles.cardContainer}>
@@ -148,9 +183,10 @@ useEffect(() => {
         </section>
    </div>
 
+
         {/* Footer */}
         <footer className={styles.footer}>
-          © 2025 Client Management. All rights reserved.
+          © 2025 customer and prospect management. All rights reserved.
         </footer>
       </div>
 

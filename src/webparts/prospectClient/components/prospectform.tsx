@@ -391,7 +391,7 @@ try {
             </div>
           </div>
           <nav className={styles.navBar}>
-            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Client Form</button>
+            <button className={styles.navButton} onClick={() => navigate('/clientform')}>Customer Form</button>
             {/* <button className={styles.navButton} onClick={() => navigate('/agreementform')}>Generate Agreement</button> */}
             {/* <button className={styles.navButton} onClick={() => navigate('/reports')}>Reports</button> */}
             <button className={styles.navButton} onClick={() => navigate('/')}>Dashboard</button>
@@ -679,7 +679,7 @@ try {
       </div>
 
       <footer className={styles.footer}>
-        © 2025 Client Management. All rights reserved.
+        © 2025 customer and prospect management system. All rights reserved.
       </footer>
     </div>
   );
